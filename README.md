@@ -99,8 +99,8 @@ pip install -r requirements.txt
 # End-to-end pipeline on the running example (heuristic fallback, no checkpoint)
 python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# The same with the trained Stage-2 checkpoint (§7)
-python3 -m src.pipeline --checkpoint checkpoints/ruen-lid --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
+# The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
+python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
 # Unit tests (15 tests)
 python3 -m unittest discover -s tests
@@ -108,8 +108,8 @@ python3 -m unittest discover -s tests
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
 python3 scripts/evaluate.py --out results/seed_results.md
 
-# The same evaluation with the trained checkpoint
-python3 scripts/evaluate.py --checkpoint checkpoints/ruen-lid
+# The same evaluation with the trained model
+python3 scripts/evaluate.py --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1
 
 # Data pipeline + augmentation statistics (no torch required)
 python3 scripts/train_poc.py --dry-run
@@ -168,9 +168,15 @@ python3 -m src.classifier.train \
 #     test split; keeps the best full-data model in checkpoints/ruen-lid
 python3 scripts/learning_curve.py
 
-# 4. Inference with a trained checkpoint
-python3 -m src.pipeline --text "kal office jana hai" --checkpoint checkpoints/ruen-lid
+# 4. Inference with a trained checkpoint (a Hugging Face id or a local folder)
+python3 -m src.pipeline --text "kal office jana hai" --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1
 ```
+
+**Trained checkpoint.** The iteration-1 model, the best full-data learning-curve run, is public on Hugging
+Face: [`OmarNiazi/ruen-lid-xlmr-base-iter1`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter1).
+It's licensed CC BY-SA 4.0, following the COMI-LINGUA training data, and its model card has the results and
+the proxy-data caveat. `--checkpoint` accepts that id (downloaded once, ~1.1 GB) or a local folder such as
+`checkpoints/ruen-lid`, which is where step 3b writes it.
 
 **Proxy splits** (`scripts/prepare_comi_lingua.py`):
 - the gold label is the 2-of-3 annotator majority; words without one are labelled `IGN` (kept as context,
