@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from collections import Counter, defaultdict
 
+from ..classifier.dataset import IGNORE_LABEL
+
 
 def accuracy(gold: list[str], pred: list[str]) -> float:
     if not gold:
@@ -42,7 +44,12 @@ def cmi(labels: list[str]) -> float:
 
 
 def summarize(rows: list[dict]) -> dict:
-    """rows: dicts with token, gold, pred and category (gold category when available)."""
+    """rows: dicts with token, gold, pred and category (gold category when available).
+
+    Rows whose gold label is IGN are left out of every score and only counted.
+    """
+    ignored = sum(1 for row in rows if row["gold"] == IGNORE_LABEL)
+    rows = [row for row in rows if row["gold"] != IGNORE_LABEL]
     gold = [row["gold"] for row in rows]
     pred = [row["pred"] for row in rows]
     by_category: dict[str, list[dict]] = defaultdict(list)
@@ -65,6 +72,7 @@ def summarize(rows: list[dict]) -> dict:
 
     return {
         "tokens": len(rows),
+        "ignored": ignored,
         "accuracy": round(accuracy(gold, pred), 4),
         "macro_f1": round(macro_f1(gold, pred), 4),
         "cmi": round(cmi(gold), 2),

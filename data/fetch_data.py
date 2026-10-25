@@ -27,10 +27,11 @@ DATASETS = {
     "comi-lingua-lid": {
         "urls": [
             "https://media.githubusercontent.com/media/lingo-iitgn/COMI-LINGUA/main/LID_train.csv",
-            "https://media.githubusercontent.com/media/lingo-iitgn/COMI-LINGUA/main/LID_test.csv",
+            # LID_test.csv is a plain git file, not Git LFS, so the LFS media URL returns 404.
+            "https://raw.githubusercontent.com/lingo-iitgn/COMI-LINGUA/main/LID_test.csv",
         ],
-        "licence": "CC BY 4.0",
-        "note": "Proxy token-level LID (Hindi-English, used only for the Stage-2 proof of concept).",
+        "licence": "CC BY-SA 4.0",
+        "note": "Proxy token-level LID (Hindi-English; Latin-script subset trains and evaluates Stage 2).",
         "large": True,
     },
     "mixlid": {

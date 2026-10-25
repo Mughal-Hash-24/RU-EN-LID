@@ -11,6 +11,8 @@ import csv
 from dataclasses import dataclass
 
 PROXY_LABEL_MAP = {"hi": "UR", "hin": "UR", "ur": "UR", "en": "EN", "eng": "EN", "ot": "OTH", "other": "OTH"}
+# Gold label for words the annotators could not agree on: kept as context, never trained on or scored.
+IGNORE_LABEL = "IGN"
 
 
 @dataclass

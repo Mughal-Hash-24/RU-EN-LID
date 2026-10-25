@@ -1,7 +1,8 @@
-# Stage 2 (transformer training) only. Install inside a Python 3.10-3.12 virtualenv:
+# Stage 2 (transformer training) only. Install inside a Python 3.10-3.13 virtualenv:
 #   python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 # (PyTorch wheels are not yet published for Python 3.14.)
 # Stages 1/3, the CLI pipeline, tests and the seed evaluation run on the standard library alone.
 torch>=2.2
-transformers>=4.40
+transformers>=4.45
 safetensors>=0.4
+accelerate>=0.26
