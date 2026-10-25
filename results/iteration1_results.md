@@ -106,7 +106,8 @@ words, against 12).
 | Hardware and time | RTX 4070 Laptop GPU (8 GB); 12 runs in 41 minutes including scoring |
 
 The model kept for the pipeline is the full-data run with the best validation score (seed 2, validation
-macro-F1 0.9447).
+macro-F1 0.9447). It is public at
+[`OmarNiazi/ruen-lid-xlmr-base-iter1`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter1).
 
 ### Evaluation
 
