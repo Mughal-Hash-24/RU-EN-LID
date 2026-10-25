@@ -4,4 +4,6 @@ __pycache__/
 venv/
 checkpoints/
 data/cache/
+results/learning_curve/logs/
+results/learning_curve/progress.log
 .DS_Store

@@ -29,11 +29,12 @@ class TokenLIDPredictor:
             words,
             is_split_into_words=True,
             truncation=True,
-            max_length=128,
+            max_length=512,
             return_tensors="pt",
         )
+        inputs = {key: value.to(self.device) for key, value in encoding.items()}
         with self.torch.no_grad():
-            logits = self.model(**encoding).logits[0].to("cpu")
+            logits = self.model(**inputs).logits[0].to("cpu")
         probabilities = self.torch.softmax(logits, dim=-1)
         word_ids = encoding.word_ids(0)
         chosen: dict[int, WordPrediction] = {}
