@@ -1,5 +1,7 @@
 # Ru–En Token-Level LID — Variation-Aware, Ambiguity-Aware Pipeline
 
+[![tests](https://github.com/Mughal-Hash-24/RU-EN-LID/actions/workflows/tests.yml/badge.svg)](https://github.com/Mughal-Hash-24/RU-EN-LID/actions/workflows/tests.yml)
+
 **Iteration 1 — implementation of the proposed methodology.**
 This repository turns the proposed pipeline (candidate expansion → context-aware classifier → rule-based
 verification) into working code and demonstrates it end-to-end on a small hand-labelled slice. Stage 2 is
@@ -28,7 +30,7 @@ their overlap).
 | Stage | Proposal step | Status in this repository |
 |---|---|---|
 | 1 | Candidate expansion (surface form kept, readings attached, never rewritten) | **Working** — lexicons, attested variant pairs, four-category taxonomy, per-token candidate sets |
-| 2 | Context-aware classifier (fine-tuned multilingual encoder) | **Trained (proxy data)** — XLM-R base fine-tuned on 6,540 Latin-script COMI-LINGUA sentences (hi → UR), per-epoch validation, inference wrapper; augmentation (synthetic romanizations, ambiguity oversampling) implemented, not yet used in training |
+| 2 | Context-aware classifier (fine-tuned multilingual encoder) | **Trained (proxy data)** — XLM-R base fine-tuned on 6,540 Latin-script COMI-LINGUA sentences (hi → UR), per-epoch validation, inference wrapper; augmentation implemented, not yet used; Stage 1 candidate conditioning is the iteration-2 ablation rung (§10.1) |
 | 3 | Rule-based verification (priors, confidence gating, consistency) | **Working** — conservative rules with per-token action log |
 | 4 | Evaluation (per-category metrics, error attribution, CMI) | **Working** — metrics module + report script + learning-curve runner + MixLID baseline adapter |
 
@@ -54,12 +56,16 @@ flowchart LR
 ruen-lid-pipeline/
 ├── README.md                  # this file
 ├── METHODOLOGY_TO_CODE.md     # required step → file/function mapping
+├── LICENSE                    # MIT for the code; data/model licences are noted in §11
 ├── requirements.txt           # Stage-2 training dependencies
+├── .github/workflows/tests.yml # standard-library test suite (Python 3.10/3.12/3.13)
 ├── data/
 │   ├── README.md              # dataset links, licences, roles
 │   ├── fetch_data.py          # downloads into data/cache (never committed)
 │   ├── resources/             # seed English + Roman Urdu lexicons, variant_pairs.tsv
-│   └── demo/seed_labels.csv   # hand-labelled demo slice (12 sentences / 51 tokens)
+│   └── demo/
+│       ├── seed_labels.csv    # hand-labelled demo slice (12 sentences / 51 tokens)
+│       └── running_examples.csv # proposal's two running examples (25 tokens)
 ├── src/
 │   ├── candidate_expansion/   # Stage 1
 │   ├── classifier/            # Stage 2 (dataset, augment, train, predict)
@@ -88,7 +94,7 @@ iteration-1 model was trained on Python 3.13 with torch 2.11 + CUDA). `requireme
 `accelerate`, which the Hugging Face `Trainer` requires:
 
 ```bash
-python3.12 -m venv .venv
+python3.13 -m venv .venv   # 3.13 was used for the iteration-1 run; 3.10–3.13 all work
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -233,6 +239,9 @@ The curve levels off between 5,000 and 6,540 training sentences. Stage 3 changes
 trained model: on the COMI-LINGUA test split it changed 1 of 15,207 tokens at τ = 0.55, and that change was
 wrong, because only 0.5% of tokens fall below τ.
 
+The 25-token running-example slice is committed as `data/demo/running_examples.csv`; reproduce that row
+with `python3 scripts/evaluate.py --data data/demo/running_examples.csv --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1`.
+
 ### Fallback mode (before Stage 2 was trained)
 
 From `results/seed_results.md` (12 sentences, 51 tokens; **demo, not a thesis result**):
@@ -261,7 +270,7 @@ because the fallback labels every ambiguous form EN and every "both" form UR (St
 trained context classifier resolves all of these on the demo slice (8/8 ambiguous, 3/3 both), and 216 of 223
 ambiguous-category tokens on the COMI-LINGUA test split.
 
-## 10. Proof-of-concept scope, deviations and limits
+## 10. Iteration-1 scope, deviations and limits
 
 Documented deviations, each deliberate and justified:
 
@@ -289,14 +298,78 @@ Documented deviations, each deliberate and justified:
 8. **A third label, `OTH`** (names, mentions, URLs), is kept from the proxy data; the proposal's task is UR/EN.
 9. **Stage 2 does not yet receive Stage 1's candidate readings** (the proposal's input is surface form +
    readings + context), so the ablation rungs "plain encoder" and "+ candidate expansion" currently coincide.
+   This is the deliberate iteration-1 scope; §10.1 gives the methodological justification.
 10. **Augmentation is implemented but not yet used in training** (§7).
 11. **Stage 3 has almost no effect with the trained model** (§9): its rules only re-check tokens below τ, and
-    the classifier is rarely that unsure.
+    the classifier is rarely that unsure. §10.2 explains why this is the expected outcome of the proposal's
+    conservative design, not a missing stage.
+
+### 10.1 Why Stage 1 is implemented but not yet conditioned into Stage 2
+
+The proposal defines Stage 2's input as *surface form + candidate readings + sentence context*, and
+explicitly leaves *the exact encoding of candidates* as an implementation choice to be settled by ablation
+(§7.2). The evaluation plan is an ablation ladder: plain encoder → + candidate expansion → + verification
+(§8). Iteration 1 implements the **first rung**. Comparing a candidate-conditioned encoder against an
+unmeasured plain-encoder baseline would confound the two stages, so the baseline is trained and reported
+first.
+
+Stage 1 is not missing. `CandidateExpander` produces the four-category taxonomy, the English reading, and
+the Urdu canonical form(s) for every token, and `LIDPipeline.run()` already holds those `TokenCandidates`
+when it calls the classifier. What is deferred is one specific encoding step: turning those readings into
+classifier features. That is the **+ candidate expansion** rung of the ablation, not a new pipeline stage.
+
+Two properties of the iteration-1 data make the deferral the correct call:
+
+1. **The proxy corpus cannot support a fair test of candidate conditioning.** 10,156 of the 15,207
+   COMI-LINGUA test tokens (67%) are outside the seed lexicons, and COMI-LINGUA has no gold four-category
+   labels. A feature-conditioned model trained now would mostly measure lexicon coverage, not the effect of
+   handling ambiguity and spelling variation.
+2. **The proposal's P1–P2 annotation is the prerequisite for a meaningful RU–EN test.** Candidate
+   conditioning must be selected and evaluated on Roman Urdu–English gold categories, not on a proxy with
+   no category labels. The current seed slice is a sanity check (51 tokens), not a model-selection set.
+
+Iteration 2 adds the candidate-conditioned encoder and reports the plain-encoder vs + candidate-expansion
+rung on identical splits, with the augmentation from `src/classifier/augment.py` in training. The handoff
+point is already explicit in the code, so this is an additive change rather than a redesign.
+
+### 10.2 Why Stage 3 is conservative and currently changes almost nothing
+
+Proposal §7.3 requires Stage 3 to be deliberately conservative so that verification cannot become a new
+error source. The implementation follows that requirement literally: a rule fires only when the classifier
+is below τ, and only for three narrow cases (variant consistency, English-lexicon prior, Urdu-lexicon
+prior). With the proxy-trained model, only 73 of 15,207 test tokens fall below τ = 0.55; Stage 3 changes one
+label and that change is wrong.
+
+That is the result the ablation is designed to expose, not a missing component. `apply_rules()` is wired
+into the pipeline, records per-token attributions, and is measured at τ = 0 (off), 0.55 (default), and 0.75
+in `results/iteration1_results.md` §3.5. The negative result supports the proposal's risk mitigation: when
+the context classifier is confident, conservative rules have little to correct, and aggressive rules would
+introduce errors. Iteration 2 revisits the rules after RU–EN retraining and reports whether Stage 3 earns
+its place in the ladder.
+
+### 10.3 What iteration 1 claims — and what it does not
+
+**Claims.** The three-stage pipeline is implemented end to end and mapped to files/functions; Stage 1
+produces per-token candidate readings without rewriting the surface form; Stage 2 trains, validates, and
+runs inside the pipeline; Stage 3 is implemented, configurable, and ablated; evaluation reports
+per-category accuracy/F1, error attribution, and CMI; the training path is reproducible and a public
+checkpoint/model card is available.
+
+**Does not claim.** Roman Urdu–English performance (the training data is a Latin-script Hindi–English
+proxy); a measured causal gain from Stage 1 (that is iteration 2's + candidate-expansion rung); a positive
+contribution from Stage 3 (the iteration-1 finding is that it is near-zero); full baselines, annotation, or
+CMI-band analysis.
+
+This scope matches the implementation rubric: full results are not required while the work is in progress;
+a working core implementation, mapped to the methodology and documented, is.
 
 ## 11. Datasets
 
 See [`data/README.md`](data/README.md) for the full table (roles, licences, links). No corpus is
 redistributed; `fetch_data.py` downloads into the git-ignored `data/cache/`.
+
+The **code** is MIT-licensed (`LICENSE`). COMI-LINGUA and the proxy checkpoint derived from it are
+CC BY-SA 4.0; the model card records that. Other datasets keep their own licences (see `data/README.md`).
 
 ## 12. Methodology → code mapping
 
@@ -314,7 +387,23 @@ The required step-by-step mapping table lives in [`METHODOLOGY_TO_CODE.md`](METH
 6. Run baselines (off-the-shelf tools, MixLID, LLMs) and the ablation ladder (P5–P6).
 7. Error-share-by-cause and CMI-band analysis (per-sentence CMI); report per-category results (P6).
 
-## 14. References
+## 14. Iteration-1 submission checklist (rubric)
+
+| Rubric requirement | Where it is satisfied |
+|---|---|
+| README: topic and problem statement | §1 |
+| README: workflow / architecture diagram | §3 |
+| README: setup and run instructions | §5–§7 |
+| README: summary of results | §9; `results/iteration1_results.md` |
+| Source code organized by methodology step | `src/candidate_expansion/`, `src/classifier/`, `src/verification/`, `src/eval/`, `src/pipeline.py` |
+| Dataset/input details, links, no large files | §11; `data/README.md` |
+| Dependencies and reproducibility | `requirements.txt`; §5–§7; public checkpoint [`OmarNiazi/ruen-lid-xlmr-base-iter1`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter1); `scripts/prepare_comi_lingua.py`; `scripts/learning_curve.py` |
+| Methodology-to-code mapping | `METHODOLOGY_TO_CODE.md` |
+| Public repository | https://github.com/Mughal-Hash-24/RU-EN-LID |
+| Tests / CI | `tests/test_pipeline.py`; `.github/workflows/tests.yml` |
+| License | `LICENSE` (MIT for code; data/model licences in §11) |
+
+## 15. References
 
 - Rafae et al., *A clustering framework for lexical normalization of Roman Urdu*, Natural Language Engineering, 2021.
 - Benton et al., *Improving informally romanized language identification*, EMNLP, 2025.

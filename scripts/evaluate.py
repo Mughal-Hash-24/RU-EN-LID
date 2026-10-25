@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -61,6 +62,7 @@ def main(argv: list[str] | None = None) -> int:
     data_path = Path(args.data)
     if not data_path.is_absolute():
         data_path = ROOT / data_path
+    display_path = os.path.relpath(data_path, ROOT) if data_path.is_relative_to(ROOT) else str(data_path)
     sentences = read_any(str(data_path))
     pipeline = LIDPipeline.from_resources(checkpoint=args.checkpoint, tau=args.tau)
 
@@ -68,8 +70,10 @@ def main(argv: list[str] | None = None) -> int:
     for sentence in sentences:
         pairs = pipeline.run(" ".join(sentence.words))
         if len(pairs) != len(sentence.words):
-            print(f"[warn] tokenization mismatch for {sentence.sentence_id}; skipped", file=sys.stderr)
-            continue
+            raise ValueError(
+                f"tokenization mismatch for {sentence.sentence_id}: "
+                f"{len(sentence.words)} gold words, {len(pairs)} pipeline tokens"
+            )
         for index, (info, decision) in enumerate(pairs):
             rows.append(
                 {
@@ -84,7 +88,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(report, indent=2))
     else:
-        text = markdown_report(report, str(data_path))
+        text = markdown_report(report, display_path)
         print(text)
         if args.out:
             out_path = Path(args.out)

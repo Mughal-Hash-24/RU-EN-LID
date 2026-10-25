@@ -17,7 +17,12 @@ This project does **not** redistribute corpora. Files are downloaded into `data/
 
 **Important:** none of the Roman Urdu corpora carry word-level language labels, which is why the
 proposal includes a manual annotation phase (P1-P2). The seed file in `data/demo/seed_labels.csv`
-is a small hand-labelled demonstration slice created for this repository.
+is a small hand-labelled demonstration slice created for this repository. `data/demo/running_examples.csv`
+adds the proposal's two running examples (25 tokens) with gold labels and categories; it is the reproducible
+form of `results/iteration1_results.md` §3.2.
+
+The iteration-1 proxy checkpoint (`OmarNiazi/ruen-lid-xlmr-base-iter1`) is distributed under CC BY-SA 4.0,
+following the COMI-LINGUA training data.
 
 COMI-LINGUA stores `LID_train.csv` with Git LFS (~123 MB) but `LID_test.csv` as a plain git file (~23 MB);
 `fetch_data.py` uses the matching URL for each and asks for confirmation before large downloads.

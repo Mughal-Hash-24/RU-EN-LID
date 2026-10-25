@@ -1,6 +1,6 @@
 # Evaluation report
 
-Data: `/home/ibtasaam/Sir Shehreyar/ruen-lid-pipeline/data/demo/seed_labels.csv` (51 tokens, demo slice)
+Data: `data/demo/seed_labels.csv` (51 tokens, demo slice)
 
 ## Overall
 

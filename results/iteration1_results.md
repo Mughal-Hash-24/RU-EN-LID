@@ -6,6 +6,11 @@ The previous iteration-1 results ([`seed_results.md`](seed_results.md), README �
 **fixed-guess fallback** standing in for Stage 2, because no trained model existed. This document reports
 the same pipeline with **Stage 2 replaced by a fine-tuned XLM-R model**, and compares the two.
 
+> **Iteration-1 scope.** This is the **plain-encoder** rung of the proposal's ablation ladder. Stage 1 is
+> fully implemented and its readings are available at the handoff, but the classifier does not yet consume
+> them; the **+ candidate expansion** rung is iteration 2 (README §10.1). Stage 3 is integrated and
+> deliberately conservative; its near-zero effect is reported in §3.5 and explained in README §10.2.
+
 ## Summary
 
 | Test set | Before: fallback in place of Stage 2 | After: trained Stage 2 + Stage 3 |
@@ -150,6 +155,9 @@ The trained model was 98–100% confident on every one of these words, so Stage 
 Figure 2's illustrative story, where *nhi* is a low-confidence slip that Stage 3 repairs, doesn't happen
 with this model.
 
+The 25 gold labels and categories are committed in `data/demo/running_examples.csv`; reproduce this table
+with `python3 scripts/evaluate.py --data data/demo/running_examples.csv --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1`.
+
 ### 3.3 COMI-LINGUA Roman-script test set
 
 750 sentences, 15,207 scored words (252 `IGN` words not scored).
@@ -260,7 +268,7 @@ triggered a rule. So with neither the fallback nor the trained model has Stage 3
 |---|---|
 | RQ1: improvement over tools / a plain encoder | So far only against the fallback: 0.42 → 0.96 on the stand-in test set. The off-the-shelf baselines (Microsoft LID, GlotLID/OpenLID, MaskLID, LLMs) haven't been run yet |
 | RQ2: share of error by cause | Not measurable yet. The demo slice has no errors left, and on COMI-LINGUA the categories are spelling-based (91% of the remaining errors fall on words "unknown" to the seed lists). Gold categories need the planned annotation |
-| RQ3: contribution of each stage | Stage 3: ≈ 0 (one word worse at τ 0.55). Stage 1: can't be measured yet, because the classifier doesn't receive Stage 1's readings, so "plain encoder" and "+ candidate expansion" are currently the same system |
+| RQ3: contribution of each stage | Stage 3: ≈ 0 (one word worse at τ 0.55). Stage 1: can't be measured yet by design — this iteration establishes the plain-encoder rung; the + candidate-expansion rung is iteration 2 (README §10.1) |
 | RQ4: behaviour as mixing increases | Not measured. It needs a per-sentence code-mixing index. The current CMI function returns one corpus-level number, and its formula should be checked against Gambäck & Das |
 
 ## 5. Limitations
@@ -302,16 +310,20 @@ python3 scripts/learning_curve.py
 ```
 
 ```bash
-python3 scripts/evaluate.py --checkpoint checkpoints/ruen-lid
+python3 scripts/evaluate.py --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1
 ```
 
 ```bash
-python3 scripts/evaluate.py --data data/cache/comi-lingua-lid/roman/test.csv --checkpoint checkpoints/ruen-lid
+python3 scripts/evaluate.py --data data/demo/running_examples.csv --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1
+```
+
+```bash
+python3 scripts/evaluate.py --data data/cache/comi-lingua-lid/roman/test.csv --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1
 ```
 
 The learning curve writes `results/learning_curve/summary.md` and `runs.json` (all 12 runs), and keeps the best
-full-data model in `checkpoints/ruen-lid/` (1.1 GB). `checkpoints/` is git-ignored, so the model is shared
-separately.
+full-data model in `checkpoints/ruen-lid/` (1.1 GB). `checkpoints/` is git-ignored; the reproducible model is
+public on Hugging Face at [`OmarNiazi/ruen-lid-xlmr-base-iter1`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter1).
 
 ## Appendix: all 12 runs
 
