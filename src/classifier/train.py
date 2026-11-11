@@ -12,6 +12,7 @@ from pathlib import Path
 
 from ..eval.metrics import accuracy, macro_f1
 from .dataset import IGNORE_LABEL, Sentence, read_any
+from .features import CAND2ID, CAND_MODES, CAND_TAGS, piece_features, word_features
 
 LABELS = ["UR", "EN", "OTH"]
 SMOKE_MODEL = "hf-internal-testing/tiny-random-XLMRobertaForTokenClassification"
@@ -53,6 +54,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--select-best", action="store_true", help="with --valid: score every epoch, keep the best validation macro-F1"
     )
+    parser.add_argument(
+        "--candidates",
+        choices=CAND_MODES,
+        default="none",
+        help="feed Stage 1 into Stage 2: none = plain encoder, tag = evidence tag, tag+reading = tag and canonical",
+    )
+    parser.add_argument("--resources", help="Stage-1 lexicon folder (default: data/resources)")
+    parser.add_argument(
+        "--cand-dropout", type=float, default=0.15, help="per word: hide Stage 1's evidence (tag -> UNK) while training"
+    )
+    parser.add_argument("--cand-lr", type=float, default=1e-3, help="learning rate of the new candidate parameters")
     return parser
 
 
@@ -62,6 +74,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         import torch
         from transformers import (
+            AutoConfig,
             AutoModelForTokenClassification,
             AutoTokenizer,
             DataCollatorForTokenClassification,
@@ -83,9 +96,27 @@ def main(argv: list[str] | None = None) -> int:
 
     model_name = SMOKE_MODEL if args.smoke else args.model
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForTokenClassification.from_pretrained(
-        model_name, num_labels=len(LABELS), id2label=id2label, label2id=label2id
-    )
+    use_candidates = args.candidates != "none"
+    use_readings = args.candidates == "tag+reading"
+    expander = None
+    if use_candidates:
+        from ..candidate_expansion.expander import CandidateExpander
+        from ..pipeline import DEFAULT_RESOURCES
+        from .candidate_model import CandidateCollator, CandidateXLMRForTokenClassification
+
+        expander = CandidateExpander.from_resources(args.resources or DEFAULT_RESOURCES)
+        config = AutoConfig.from_pretrained(model_name, num_labels=len(LABELS), id2label=id2label, label2id=label2id)
+        config.num_cand_tags = len(CAND_TAGS)
+        config.candidate_mode = args.candidates  # read back by predict.py
+        model, loading = CandidateXLMRForTokenClassification.from_pretrained(
+            model_name, config=config, output_loading_info=True
+        )
+        if any("cand_embeddings" in key for key in loading["missing_keys"]):
+            model.reset_candidate_parameters()  # plain checkpoint: step 0 == the plain model
+    else:
+        model = AutoModelForTokenClassification.from_pretrained(
+            model_name, num_labels=len(LABELS), id2label=id2label, label2id=label2id
+        )
 
     def encode(sentences: list[Sentence]):
         encodings = tokenizer(
@@ -110,8 +141,52 @@ def main(argv: list[str] | None = None) -> int:
         def __getitem__(self, index):
             return {key: torch.tensor(value[index]) for key, value in self.encodings.items()}
 
-    train_dataset = TokenDataset(encode(train_sentences))
-    eval_dataset = TokenDataset(encode(valid_sentences)) if valid_sentences else None
+    class CandidateDataset(torch.utils.data.Dataset):
+        """Plain lists per sentence plus Stage 1's features; ``dropout`` hides evidence per word."""
+
+        def __init__(self, sentences: list[Sentence], dropout: float = 0.0, seed: int = 0):
+            encodings = encode(sentences)
+            self.rows = []
+            self.word_ids = []
+            for index, sentence in enumerate(sentences):
+                word_ids = encodings.word_ids(index)
+                tags, readings = word_features(expander, sentence.words)
+                row = {key: encodings[key][index] for key in ("input_ids", "attention_mask", "labels")}
+                row.update(piece_features(word_ids, tags, readings, tokenizer, use_readings))
+                self.rows.append(row)
+                self.word_ids.append(word_ids)
+            self.dropout = dropout
+            self.generator = torch.Generator().manual_seed(seed)
+
+        def __len__(self):
+            return len(self.rows)
+
+        def __getitem__(self, index):
+            row = dict(self.rows[index])
+            if self.dropout <= 0:
+                return row
+            word_ids = self.word_ids[index]
+            words = max((w for w in word_ids if w is not None), default=-1) + 1
+            hidden = torch.rand(words, generator=self.generator) < self.dropout
+            unknown = CAND2ID["UNK"]
+            row["cand_ids"] = [
+                unknown if w is not None and hidden[w] else tag for w, tag in zip(word_ids, row["cand_ids"])
+            ]
+            if use_readings:
+                row["reading_mask"] = [
+                    [0] * len(mask) if w is not None and hidden[w] else mask
+                    for w, mask in zip(word_ids, row["reading_mask"])
+                ]
+            return row
+
+    if use_candidates:
+        train_dataset = CandidateDataset(train_sentences, dropout=args.cand_dropout, seed=args.seed)
+        eval_dataset = CandidateDataset(valid_sentences) if valid_sentences else None
+        collator = CandidateCollator(tokenizer)
+    else:
+        train_dataset = TokenDataset(encode(train_sentences))
+        eval_dataset = TokenDataset(encode(valid_sentences)) if valid_sentences else None
+        collator = DataCollatorForTokenClassification(tokenizer)
 
     def compute_metrics(eval_prediction):
         logits, labels = eval_prediction
@@ -142,13 +217,28 @@ def main(argv: list[str] | None = None) -> int:
         metric_for_best_model="macro_f1" if per_epoch else None,
         report_to=[],
     )
+    optimizers = (None, None)
+    if use_candidates:
+        # The new parameters start at zero; at the encoder's 5e-5 they would barely move.
+        new = [p for n, p in model.named_parameters() if n.startswith(("cand_embeddings", "reading_gate"))]
+        old = [p for n, p in model.named_parameters() if not n.startswith(("cand_embeddings", "reading_gate"))]
+        optimizers = (
+            torch.optim.AdamW(
+                [
+                    {"params": old, "lr": args.learning_rate, "weight_decay": args.weight_decay},
+                    {"params": new, "lr": args.cand_lr, "weight_decay": 0.0},
+                ]
+            ),
+            None,
+        )
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        data_collator=DataCollatorForTokenClassification(tokenizer),
+        data_collator=collator,
         compute_metrics=compute_metrics,
+        optimizers=optimizers,
     )
     trainer.train()
     final_eval = trainer.evaluate() if eval_dataset is not None else None

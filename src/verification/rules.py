@@ -19,6 +19,8 @@ class Decision:
     label: str
     confidence: float
     rules: tuple[str, ...] = ()
+    # True when Stage 2 was below tau: the label was handed to Stage 3 instead of being accepted.
+    deferred: bool = False
 
     def as_dict(self) -> dict:
         return {
@@ -26,6 +28,7 @@ class Decision:
             "label": self.label,
             "confidence": round(self.confidence, 3),
             "rules": list(self.rules),
+            "deferred": self.deferred,
         }
 
 
@@ -61,5 +64,9 @@ def apply_rules(
             final = "UR"
             rules.append("urdu-lexicon-prior")
 
-        decisions.append(Decision(token=info.surface, label=final, confidence=confidence, rules=tuple(rules)))
+        decisions.append(
+            Decision(
+                token=info.surface, label=final, confidence=confidence, rules=tuple(rules), deferred=confidence < tau
+            )
+        )
     return decisions

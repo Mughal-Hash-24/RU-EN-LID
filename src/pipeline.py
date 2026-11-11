@@ -55,7 +55,9 @@ class LIDPipeline:
         if self.predictor is not None:
             predictions = [
                 (prediction.label, prediction.confidence)
-                for prediction in self.predictor.predict_words([token.surface for token in tokens])
+                for prediction in self.predictor.predict_words(
+                    [token.surface for token in tokens], candidates=tokens
+                )
             ]
         else:
             predictions = heuristic_predictions(tokens)
@@ -72,6 +74,7 @@ class LIDPipeline:
                 "english_reading": info.english_reading,
                 "urdu_canonicals": list(info.urdu_canonicals),
                 "rules": list(decision.rules),
+                "deferred": decision.deferred,
             }
             for info, decision in self.run(text)
         ]
