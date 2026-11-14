@@ -13,11 +13,12 @@ sys.path.insert(0, str(ROOT))
 
 from src.classifier.dataset import read_any  # noqa: E402
 from src.eval.metrics import summarize  # noqa: E402
-from src.pipeline import LIDPipeline  # noqa: E402
+from src.eval.selective import collect_rows, selective_markdown, selective_report  # noqa: E402
+from src.pipeline import DEFAULT_RESOURCES, LIDPipeline  # noqa: E402
 from src.verification.rules import DEFAULT_TAU  # noqa: E402
 
 
-def markdown_report(report: dict, data_path: str) -> str:
+def markdown_report(report: dict, data_path: str, selective: dict | None = None) -> str:
     lines = [
         f"# Evaluation report",
         "",
@@ -47,6 +48,8 @@ def markdown_report(report: dict, data_path: str) -> str:
     for category, share in report["error_share_by_cause"].items():
         lines.append(f"| {category} | {share:.2%} |")
     lines.append("")
+    if selective is not None:
+        lines += selective_markdown(selective)
     return "\n".join(lines)
 
 
@@ -55,6 +58,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--data", default="data/demo/seed_labels.csv")
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
     parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
+    parser.add_argument("--resources", default=DEFAULT_RESOURCES, help="Stage-1 lexicon folder")
+    parser.add_argument(
+        "--context-penalty", type=float, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
+    )
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--out", help="write the markdown report to this path")
     args = parser.parse_args(argv)
@@ -64,31 +71,17 @@ def main(argv: list[str] | None = None) -> int:
         data_path = ROOT / data_path
     display_path = os.path.relpath(data_path, ROOT) if data_path.is_relative_to(ROOT) else str(data_path)
     sentences = read_any(str(data_path))
-    pipeline = LIDPipeline.from_resources(checkpoint=args.checkpoint, tau=args.tau)
-
-    rows = []
-    for sentence in sentences:
-        pairs = pipeline.run(" ".join(sentence.words))
-        if len(pairs) != len(sentence.words):
-            raise ValueError(
-                f"tokenization mismatch for {sentence.sentence_id}: "
-                f"{len(sentence.words)} gold words, {len(pairs)} pipeline tokens"
-            )
-        for index, (info, decision) in enumerate(pairs):
-            rows.append(
-                {
-                    "token": decision.token,
-                    "gold": sentence.labels[index],
-                    "pred": decision.label,
-                    "category": (sentence.categories[index] if sentence.categories else info.category),
-                }
-            )
+    pipeline = LIDPipeline.from_resources(
+        args.resources, checkpoint=args.checkpoint, tau=args.tau, context_penalty=args.context_penalty
+    )
+    rows = collect_rows(pipeline, sentences)
 
     report = summarize(rows)
+    selective = selective_report(rows)
     if args.json:
-        print(json.dumps(report, indent=2))
+        print(json.dumps({**report, "selective": selective}, indent=2))
     else:
-        text = markdown_report(report, display_path)
+        text = markdown_report(report, display_path, selective)
         print(text)
         if args.out:
             out_path = Path(args.out)

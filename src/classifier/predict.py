@@ -9,6 +9,8 @@ from dataclasses import dataclass
 class WordPrediction:
     label: str
     confidence: float
+    # Full Stage-2 distribution (label -> probability), used by the Stage-3 context decoder.
+    probs: dict[str, float] | None = None
 
 
 class TokenLIDPredictor:
@@ -79,6 +81,8 @@ class TokenLIDPredictor:
         for position, word_id in enumerate(word_ids):
             if word_id is None or word_id in chosen:
                 continue
-            confidence, label_id = probabilities[position].max(dim=-1)
-            chosen[word_id] = WordPrediction(self.id2label[int(label_id)], float(confidence))
-        return [chosen.get(index, WordPrediction("OTH", 0.0)) for index in range(len(words))]
+            row = probabilities[position]
+            confidence, label_id = row.max(dim=-1)
+            probs = {self.id2label[index]: float(value) for index, value in enumerate(row)}
+            chosen[word_id] = WordPrediction(self.id2label[int(label_id)], float(confidence), probs)
+        return [chosen.get(index, WordPrediction("OTH", 0.0, {"OTH": 1.0})) for index in range(len(words))]

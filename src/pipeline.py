@@ -7,7 +7,7 @@ import json
 import os
 
 from .candidate_expansion.expander import CandidateExpander, TokenCandidates
-from .verification.rules import DEFAULT_TAU, apply_rules
+from .verification.rules import DEFAULT_TAU, apply_context, apply_rules
 
 DEFAULT_RESOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "resources")
 
@@ -29,11 +29,36 @@ def heuristic_predictions(tokens: list[TokenCandidates]) -> list[tuple[str, floa
     return predictions
 
 
+def heuristic_distributions(tokens: list[TokenCandidates]) -> list[dict[str, float]]:
+    """Stand-in Stage-2 distributions for the model-free fallback (ambiguous = no preference)."""
+    distributions: list[dict[str, float]] = []
+    for info in tokens:
+        if info.category == "ambiguous":
+            distributions.append({"UR": 0.5, "EN": 0.5, "OTH": 0.0})
+        elif info.category in {"variant", "both"}:
+            distributions.append({"UR": 0.6, "EN": 0.4, "OTH": 0.0})
+        elif info.english_reading and not info.urdu_canonicals:
+            distributions.append({"UR": 0.05, "EN": 0.9, "OTH": 0.05})
+        elif info.urdu_canonicals and not info.english_reading:
+            distributions.append({"UR": 0.9, "EN": 0.05, "OTH": 0.05})
+        else:
+            distributions.append({"UR": 0.0, "EN": 0.0, "OTH": 1.0})
+    return distributions
+
+
 class LIDPipeline:
-    def __init__(self, expander: CandidateExpander, predictor=None, tau: float = DEFAULT_TAU) -> None:
+    def __init__(
+        self,
+        expander: CandidateExpander,
+        predictor=None,
+        tau: float = DEFAULT_TAU,
+        context_penalty: float = 0.0,
+    ) -> None:
         self.expander = expander
         self.predictor = predictor
         self.tau = tau
+        # 0 = context decoder off (iteration-1 behaviour). Tune on validation with scripts/tune_stage3.py.
+        self.context_penalty = context_penalty
 
     @classmethod
     def from_resources(
@@ -41,6 +66,7 @@ class LIDPipeline:
         resources_dir: str = DEFAULT_RESOURCES,
         checkpoint: str | None = None,
         tau: float = DEFAULT_TAU,
+        context_penalty: float = 0.0,
     ) -> "LIDPipeline":
         expander = CandidateExpander.from_resources(resources_dir)
         predictor = None
@@ -48,20 +74,19 @@ class LIDPipeline:
             from .classifier.predict import TokenLIDPredictor
 
             predictor = TokenLIDPredictor(checkpoint)
-        return cls(expander, predictor, tau)
+        return cls(expander, predictor, tau, context_penalty)
 
     def run(self, text: str):
         tokens = self.expander.expand(text)
         if self.predictor is not None:
-            predictions = [
-                (prediction.label, prediction.confidence)
-                for prediction in self.predictor.predict_words(
-                    [token.surface for token in tokens], candidates=tokens
-                )
-            ]
+            outputs = self.predictor.predict_words([token.surface for token in tokens], candidates=tokens)
+            predictions = [(output.label, output.confidence) for output in outputs]
+            distributions = [output.probs or {output.label: 1.0} for output in outputs]
         else:
             predictions = heuristic_predictions(tokens)
+            distributions = heuristic_distributions(tokens)
         decisions = apply_rules(tokens, predictions, self.tau)
+        decisions = apply_context(tokens, decisions, distributions, self.context_penalty)
         return list(zip(tokens, decisions))
 
     def run_records(self, text: str) -> list[dict]:
@@ -75,6 +100,7 @@ class LIDPipeline:
                 "urdu_canonicals": list(info.urdu_canonicals),
                 "rules": list(decision.rules),
                 "deferred": decision.deferred,
+                "stage2_label": decision.stage2_label,
             }
             for info, decision in self.run(text)
         ]
@@ -102,10 +128,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
     parser.add_argument("--resources", default=DEFAULT_RESOURCES)
     parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
+    parser.add_argument(
+        "--context-penalty", type=float, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
+    )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
 
-    pipeline = LIDPipeline.from_resources(args.resources, checkpoint=args.checkpoint, tau=args.tau)
+    pipeline = LIDPipeline.from_resources(
+        args.resources, checkpoint=args.checkpoint, tau=args.tau, context_penalty=args.context_penalty
+    )
     records = pipeline.run_records(args.text)
     if args.json:
         print(json.dumps(records, indent=2, ensure_ascii=False))

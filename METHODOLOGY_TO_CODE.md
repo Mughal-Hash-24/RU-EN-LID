@@ -28,7 +28,10 @@ the confident proxy model is reported rather than hidden. README §10.1–§10.3
 | Methodology step | File | Function / artefact |
 |---|---|---|
 | Token-level dataset loading (seed format + proxy CSVs with schema detection) | `src/classifier/dataset.py` | `read_any()`, `read_seed_csv()`, `read_proxy_lid_csv()` |
-| Stage 1 → Stage 2 handoff: candidate readings are computed per token; the iteration-1 classifier consumes surface forms only | `src/candidate_expansion/expander.py`, `src/pipeline.py`, `src/classifier/train.py` | `TokenCandidates` (English reading, Urdu canonical(s), category); `LIDPipeline.run()`; candidate-conditioned encoding is the iteration-2 ablation rung (README §10.1) |
+| Stage 1 → Stage 2 handoff (iteration 2): each word's evidence tag (EN/UR/AMB/VAR/BOTH/UNK) and Urdu canonical reading | `src/classifier/features.py` | `stage1_tag()`, `reading_of()`, `piece_features()` |
+| Candidate-conditioned XLM-R: tag and reading added to the input embedding; zero-initialised so step 0 equals the plain model | `src/classifier/candidate_model.py` | `CandidateXLMRForTokenClassification`, `reset_candidate_parameters()`; `train.py --candidates none\|tag\|tag+reading`, `--cand-dropout` |
+| Temperature scaling of Stage-2 confidences (fit on validation) | `src/classifier/calibrate.py` | `fit_temperature()`; stored as `temperature` in the checkpoint config |
+| Corpus-induced lexicons: EN / UR / AMB from training-split label counts (seeds never edited) | `src/candidate_expansion/induce.py`, `scripts/build_lexicon.py` | `induce()`; `--min-count`, `--purity`, `--ambiguous-share`; `induction_report.json` |
 | Proxy training data: COMI-LINGUA Latin-script subset (annotator majority, leakage removal, pipeline tokenization, train/valid/test + nested subsets) | `scripts/prepare_comi_lingua.py` | `majority_record()`, `retokenize()`, `main()` (`--subsets`) |
 | Unresolved annotations kept as context but excluded from training (no annotator majority → `IGN`) | `src/classifier/dataset.py`, `src/classifier/train.py` | `IGNORE_LABEL`, `align_labels()` |
 | Synthetic romanization augmentation (spelling variation is synthesizable) | `src/classifier/augment.py` | `synthetic_variants()`, `augment_sentence()` (implemented; not yet called by `train.py`) |
@@ -47,6 +50,10 @@ the confident proxy model is reported rather than hidden. README §10.1–§10.3
 | Conservative post-checks: variant consistency, lexicon priors, confidence gating | `src/verification/rules.py` | `apply_rules()` (`variant-consistency`, `english-lexicon-prior`, `urdu-lexicon-prior`) |
 | Per-token decision record with applied-rule attribution | `src/verification/rules.py` | `Decision` dataclass |
 | Threshold (τ) control | `src/verification/rules.py`, `src/pipeline.py` | `DEFAULT_TAU`, `--tau` |
+| Deferred words: Stage 2 below τ hands the word to Stage 3 | `src/verification/rules.py` | `Decision.deferred`, `Decision.stage2_label` |
+| Context decoder (iteration 2): deferred ambiguous/unknown words re-decoded with a UR↔EN switch penalty; accepted and rule-fixed words pinned | `src/verification/context.py`, `src/verification/rules.py` | `decode()` (two-state Viterbi), `apply_context()`, `CONTEXT_CATEGORIES`; `--context-penalty` |
+| Tuning τ and the switch penalty on validation | `scripts/tune_stage3.py` | grid over τ × penalty; Stage 2 runs once per sentence |
+| Selective evaluation: coverage, accuracy of accepted vs deferred words, Stage-3 fixes and breaks per rule, per Stage-1 category | `src/eval/selective.py`, `scripts/evaluate.py` | `collect_rows()`, `selective_report()` |
 | Stage-3 ablation (τ = 0 vs default vs 0.75) and the near-zero effect of conservative rules | `scripts/evaluate.py`, `results/iteration1_results.md` §3.5 | `--tau`; per-token `Decision.rules`; README §10.2 |
 
 ## Pipeline orchestration

@@ -108,7 +108,7 @@ python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, ma
 # The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
 python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# Unit tests (15 tests)
+# Unit tests (31 tests; 26 without torch)
 python3 -m unittest discover -s tests
 
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
@@ -362,6 +362,33 @@ CMI-band analysis.
 
 This scope matches the implementation rubric: full results are not required while the work is in progress;
 a working core implementation, mapped to the methodology and documented, is.
+
+### 10.4 Iteration 2 (in progress): Stage 1 feeds Stage 2, Stage 3 uses context
+
+Implemented and unit-tested; **not yet trained or evaluated on COMI-LINGUA**, so no results are claimed.
+
+- **Stage 1 → Stage 2.** `train.py --candidates tag|tag+reading` adds each word's Stage-1 evidence tag (EN, UR, AMB, VAR, BOTH, UNK) and its Urdu canonical reading to the XLM-R input embedding. The new parameters start at zero, so the ablation against the plain model changes nothing else.
+- **Lexicon coverage.** `scripts/build_lexicon.py` grows the seeds from the training split's labels and writes a new resource folder (EN, UR, and an observed AMB set); pass it to any tool with `--resources`. Build it from training data only.
+- **Stage 3 context.** With `--context-penalty λ > 0`, deferred ambiguous and unknown words are re-decoded with a cost λ per UR↔EN switch; accepted and rule-fixed words never change. λ = 0 is iteration-1 behaviour. Variants are not re-decoded: on the running example that turned *he* (= *hai*) after "same issue" into English.
+- **Evaluation.** `scripts/evaluate.py` now also reports coverage, accuracy on accepted vs deferred words, and Stage-3 fixes and breaks per rule and per Stage-1 category.
+
+```bash
+D=data/cache/comi-lingua-lid/roman
+python3 scripts/build_lexicon.py --train $D/train.csv --out data/resources_induced --check $D/valid.csv
+# same hyperparameters as the iteration-1 run, so only --candidates differs
+python3 -m src.classifier.train --train $D/train.csv --valid $D/valid.csv \
+  --model xlm-roberta-base --epochs 5 --batch-size 16 --learning-rate 3e-5 \
+  --warmup-ratio 0.1 --weight-decay 0.01 --max-length 256 --bf16 --select-best \
+  --candidates tag --resources data/resources_induced --out checkpoints/run-tag
+python3 -m src.classifier.calibrate --checkpoint checkpoints/run-tag --valid $D/valid.csv \
+  --resources data/resources_induced
+python3 scripts/tune_stage3.py --data $D/valid.csv --checkpoint checkpoints/run-tag \
+  --resources data/resources_induced
+python3 scripts/evaluate.py --data $D/test.csv --checkpoint checkpoints/run-tag \
+  --resources data/resources_induced --tau <best> --context-penalty <best>
+```
+
+Compare against the iteration-1 model on the same test split (`--candidates none`, same seeds), and report the ambiguous and unknown rows of the Stage-1 category table, not only overall accuracy.
 
 ## 11. Datasets
 
