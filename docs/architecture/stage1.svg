@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="t d">
+<title id="t">RU-EN-LID Stage 1: candidate expansion</title><desc id="d">Each word is looked up in an English lexicon, a Roman Urdu lexicon and a list of attested spelling variants; a fixed decision order assigns one of six evidence tags and an Urdu reading. The word itself is never rewritten.</desc>
+<defs><filter id="shadow" x="-5%" y="-5%" width="110%" height="120%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1E2230" flood-opacity="0.07"/></filter><linearGradient id="both" x1="0" y1="0" x2="1" y2="0"><stop offset="0.5" stop-color="#FDF1DA"/><stop offset="0.5" stop-color="#EFE9FC"/></linearGradient><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#E7E4DC"/></pattern><marker id="ah1E2230" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1E2230"/></marker><marker id="ahB45309" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#B45309"/></marker><marker id="ah9C2F5E" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9C2F5E"/></marker><marker id="ah0F7B70" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0F7B70"/></marker><marker id="ah4338A0" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4338A0"/></marker><marker id="ah8A919E" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8A919E"/></marker></defs>
+<rect width="1600" height="1000" fill="#FBFAF6"/><rect width="1600" height="1000" fill="url(#dots)"/>
+<text x="60" y="66" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#1E2230" text-anchor="start">Stage 1 · Candidate expansion</text>
+<text x="60" y="98" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#5E6675" text-anchor="start">Each word is looked up, tagged, and given its Urdu reading. Evidence is added; the word itself is never rewritten.</text>
+<text x="1540" y="64" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1E2230" text-anchor="end" letter-spacing="1.2">RU-EN-LID</text>
+<text x="1540" y="84" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="end">proposed architecture · stage 1</text>
+<line x1="60" y1="122" x2="1540" y2="122" stroke="#E5E2DA" stroke-width="1"/>
+<text x="60" y="160" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#4338A0" text-anchor="start" letter-spacing="1.6">RESOURCES</text>
+<rect x="60" y="176" width="360" height="118" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="80" y="210" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2230" text-anchor="start">English lexicon</text>
+<text x="400" y="218" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#4338A0" text-anchor="end">177</text>
+<text x="400" y="238" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="end">seed words</text>
+<text x="80" y="246" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">false friends removed on load:</text>
+<text x="80" y="268" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">hai · ko · ki · se · nahi · …</text>
+<rect x="60" y="308" width="360" height="118" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="80" y="342" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2230" text-anchor="start">Roman Urdu lexicon</text>
+<text x="400" y="350" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#4338A0" text-anchor="end">98</text>
+<text x="400" y="370" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="end">seed words</text>
+<text x="80" y="378" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">spelt as people type it,</text>
+<text x="80" y="400" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">not as a dictionary writes it</text>
+<rect x="60" y="440" width="360" height="118" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="80" y="474" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1E2230" text-anchor="start">Attested variant pairs</text>
+<text x="400" y="482" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#4338A0" text-anchor="end">9</text>
+<text x="400" y="502" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="end">pairs</text>
+<text x="80" y="510" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">bht → bohat   nhi → nahi</text>
+<text x="80" y="532" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">he → hai     bar → baar</text>
+<rect x="60" y="572" width="360" height="150" rx="14" fill="#FFFFFF" stroke="#4338A0" stroke-width="1.0" stroke-dasharray="6 4"/>
+<text x="80" y="602" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#4338A0" text-anchor="start">+ induced from training labels</text>
+<text x="80" y="622" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">scripts/build_lexicon.py (optional)</text>
+<text x="80" y="648" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">seen ≥ 3 times in the training split</text>
+<text x="80" y="667" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">≥ 90 % one language  →  EN or UR list</text>
+<text x="80" y="686" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">each language ≥ 20 %  →  both lists (AMB)</text>
+<text x="80" y="705" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">seed files are never edited</text>
+<path d="M 424 647 L 450 647 L 450 235 L 426 235" fill="none" stroke="#4338A0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4" marker-end="url(#ah4338A0)"/>
+<path d="M 450 367 L 426 367" fill="none" stroke="#4338A0" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4" marker-end="url(#ah4338A0)"/>
+<text x="470" y="160" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#4338A0" text-anchor="start" letter-spacing="1.6">DECISION · checked top to bottom, first match wins</text>
+<rect x="470" y="176" width="680" height="520" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<rect x="470" y="176" width="680" height="52" rx="14" fill="#EFEDFB"/>
+<rect x="470" y="210" width="680" height="18" fill="#EFEDFB"/>
+<text x="544" y="207" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4338A0" text-anchor="middle">variant</text>
+<text x="636" y="207" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4338A0" text-anchor="middle">in English</text>
+<text x="724" y="207" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4338A0" text-anchor="middle">in Urdu</text>
+<text x="814" y="207" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4338A0" text-anchor="middle">tag</text>
+<text x="918" y="207" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4338A0" text-anchor="middle">example</text>
+<text x="1060" y="207" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4338A0" text-anchor="middle">Urdu reading</text>
+<text x="544" y="268" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<text x="636" y="268" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<text x="724" y="268" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#8A919E" text-anchor="middle">·</text>
+<rect x="782.0" y="249.0" width="64" height="26" rx="13.0" fill="url(#both)" stroke="#9A5A86" stroke-width="1.3"/>
+<text x="814" y="266.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#5B2E52" text-anchor="middle">BOTH</text>
+<text x="918" y="268" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="16" font-weight="600" fill="#1E2230" text-anchor="middle">he</text>
+<text x="1060" y="268" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="600" fill="#4F3196" text-anchor="middle">hai</text>
+<text x="868" y="288" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#8A919E" text-anchor="start">a variant that is also an English word</text>
+<line x1="490" y1="298" x2="1130" y2="298" stroke="#E5E2DA"/>
+<text x="544" y="340" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#8A919E" text-anchor="middle">·</text>
+<text x="636" y="340" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<text x="724" y="340" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<rect x="782.0" y="321.0" width="64" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="814" y="338.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#8A5300" text-anchor="middle">AMB</text>
+<text x="918" y="340" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="16" font-weight="600" fill="#1E2230" text-anchor="middle">main</text>
+<text x="1060" y="340" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="400" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="868" y="360" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#8A919E" text-anchor="start">two readings; only context can decide</text>
+<line x1="490" y1="370" x2="1130" y2="370" stroke="#E5E2DA"/>
+<text x="544" y="412" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<text x="636" y="412" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#8A919E" text-anchor="middle">·</text>
+<text x="724" y="412" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#8A919E" text-anchor="middle">·</text>
+<rect x="782.0" y="393.0" width="64" height="26" rx="13.0" fill="#EFE9FC" stroke="#7350C6" stroke-width="1.3"/>
+<text x="814" y="410.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#4F3196" text-anchor="middle">VAR</text>
+<text x="918" y="412" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="16" font-weight="600" fill="#1E2230" text-anchor="middle">bht</text>
+<text x="1060" y="412" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="600" fill="#4F3196" text-anchor="middle">bohat</text>
+<text x="868" y="432" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#8A919E" text-anchor="start">non-standard spelling of an Urdu word</text>
+<line x1="490" y1="442" x2="1130" y2="442" stroke="#E5E2DA"/>
+<text x="544" y="484" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="636" y="484" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<text x="724" y="484" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<rect x="782.0" y="465.0" width="64" height="26" rx="13.0" fill="#E4EDFC" stroke="#2F62C0" stroke-width="1.3"/>
+<text x="814" y="482.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1D4594" text-anchor="middle">EN</text>
+<text x="918" y="484" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="16" font-weight="600" fill="#1E2230" text-anchor="middle">upset</text>
+<text x="1060" y="484" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="400" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="868" y="504" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#8A919E" text-anchor="start">English only</text>
+<line x1="490" y1="514" x2="1130" y2="514" stroke="#E5E2DA"/>
+<text x="544" y="556" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="636" y="556" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="724" y="556" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C6440" text-anchor="middle">✓</text>
+<rect x="782.0" y="537.0" width="64" height="26" rx="13.0" fill="#E2F4E9" stroke="#2C8A55" stroke-width="1.3"/>
+<text x="814" y="554.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1C6440" text-anchor="middle">UR</text>
+<text x="918" y="556" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="16" font-weight="600" fill="#1E2230" text-anchor="middle">tha</text>
+<text x="1060" y="556" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="400" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="868" y="576" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#8A919E" text-anchor="start">Urdu only</text>
+<line x1="490" y1="586" x2="1130" y2="586" stroke="#E5E2DA"/>
+<text x="544" y="628" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="636" y="628" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="724" y="628" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#B9BEC6" text-anchor="middle">—</text>
+<rect x="782.0" y="609.0" width="64" height="26" rx="13.0" fill="#F3F4F6" stroke="#9AA0A6" stroke-width="1.3" stroke-dasharray="4 3"/>
+<text x="814" y="626.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#5F6368" text-anchor="middle">UNK</text>
+<text x="918" y="628" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="16" font-weight="600" fill="#1E2230" text-anchor="middle">jio</text>
+<text x="1060" y="628" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="15" font-weight="400" fill="#B9BEC6" text-anchor="middle">—</text>
+<text x="868" y="648" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#8A919E" text-anchor="start">no lexicon evidence</text>
+<text x="490" y="684" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">✓ yes   — no   · either</text>
+<text x="1200" y="160" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#4338A0" text-anchor="start" letter-spacing="1.6">HANDOFF TO STAGE 2</text>
+<rect x="1200" y="176" width="340" height="156" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="1220" y="208" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">surface</text>
+<text x="1310" y="208" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="700" fill="#1E2230" text-anchor="start">bht</text>
+<text x="1220" y="244" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">tag</text>
+<rect x="1310.0" y="226.0" width="64" height="26" rx="13.0" fill="#EFE9FC" stroke="#7350C6" stroke-width="1.3"/>
+<text x="1342" y="243.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#4F3196" text-anchor="middle">VAR</text>
+<text x="1220" y="278" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">reading</text>
+<text x="1310" y="282" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="17" font-weight="600" fill="#4F3196" text-anchor="start">bohat</text>
+<text x="1220" y="314" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="start" font-style="italic">Urdu reading added</text>
+<rect x="1200" y="352" width="340" height="156" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="1220" y="384" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">surface</text>
+<text x="1310" y="384" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="700" fill="#1E2230" text-anchor="start">main</text>
+<text x="1220" y="420" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">tag</text>
+<rect x="1310.0" y="402.0" width="64" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="1342" y="419.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#8A5300" text-anchor="middle">AMB</text>
+<text x="1220" y="454" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">reading</text>
+<text x="1310" y="458" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="17" font-weight="600" fill="#B9BEC6" text-anchor="start">—</text>
+<text x="1220" y="490" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="start" font-style="italic">no reading: context decides</text>
+<rect x="1200" y="528" width="340" height="168" rx="14" fill="#EFEDFB" stroke="#4338A0" stroke-width="1.2"/>
+<text x="1220" y="560" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#4338A0" text-anchor="start">Tags are evidence, not answers.</text>
+<text x="1220" y="588" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">Stage 2 sees the tag and reading</text>
+<text x="1220" y="608" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">next to the original word and</text>
+<text x="1220" y="628" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">decides in context. AMB, VAR,</text>
+<text x="1220" y="648" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">BOTH and UNK never appear as</text>
+<text x="1220" y="668" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">output labels.</text>
+<path d="M 1154 262 L 1194 262" fill="none" stroke="#4338A0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah4338A0)"/>
+<rect x="60" y="740" width="1480" height="236" rx="16" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="84" y="776" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1E2230" text-anchor="start">What Stage 1 hands on for the running example</text>
+<text x="1516" y="776" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="400" fill="#8A919E" text-anchor="end">computed by src/classifier/features.py</text>
+<text x="150" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">box</text>
+<path d="M 150 846 L 150 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="115.0" y="873.0" width="70" height="26" rx="13.0" fill="#E4EDFC" stroke="#2F62C0" stroke-width="1.3"/>
+<text x="150" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1D4594" text-anchor="middle">EN</text>
+<text x="150" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="278" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">band</text>
+<path d="M 278 846 L 278 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="243.0" y="873.0" width="70" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="278" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#8A5300" text-anchor="middle">AMB</text>
+<text x="278" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="406" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">nhi</text>
+<path d="M 406 846 L 406 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="371.0" y="873.0" width="70" height="26" rx="13.0" fill="#EFE9FC" stroke="#7350C6" stroke-width="1.3"/>
+<text x="406" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#4F3196" text-anchor="middle">VAR</text>
+<text x="406" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="600" fill="#4F3196" text-anchor="middle">nahi</text>
+<text x="534" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">tha</text>
+<path d="M 534 846 L 534 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="499.0" y="873.0" width="70" height="26" rx="13.0" fill="#E2F4E9" stroke="#2C8A55" stroke-width="1.3"/>
+<text x="534" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1C6440" text-anchor="middle">UR</text>
+<text x="534" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="662" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">main</text>
+<path d="M 662 846 L 662 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="627.0" y="873.0" width="70" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="662" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#8A5300" text-anchor="middle">AMB</text>
+<text x="662" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="790" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">bht</text>
+<path d="M 790 846 L 790 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="755.0" y="873.0" width="70" height="26" rx="13.0" fill="#EFE9FC" stroke="#7350C6" stroke-width="1.3"/>
+<text x="790" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#4F3196" text-anchor="middle">VAR</text>
+<text x="790" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="600" fill="#4F3196" text-anchor="middle">bohat</text>
+<text x="918" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">upset</text>
+<path d="M 918 846 L 918 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="883.0" y="873.0" width="70" height="26" rx="13.0" fill="#E4EDFC" stroke="#2F62C0" stroke-width="1.3"/>
+<text x="918" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1D4594" text-anchor="middle">EN</text>
+<text x="918" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="1046" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">hoon</text>
+<path d="M 1046 846 L 1046 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="1011.0" y="873.0" width="70" height="26" rx="13.0" fill="#E2F4E9" stroke="#2C8A55" stroke-width="1.3"/>
+<text x="1046" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1C6440" text-anchor="middle">UR</text>
+<text x="1046" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="1174" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">is</text>
+<path d="M 1174 846 L 1174 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="1139.0" y="873.0" width="70" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="1174" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#8A5300" text-anchor="middle">AMB</text>
+<text x="1174" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="1302" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">bar</text>
+<path d="M 1302 846 L 1302 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="1267.0" y="873.0" width="70" height="26" rx="13.0" fill="url(#both)" stroke="#9A5A86" stroke-width="1.3"/>
+<text x="1302" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#5B2E52" text-anchor="middle">BOTH</text>
+<text x="1302" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="600" fill="#4F3196" text-anchor="middle">baar</text>
+<text x="1430" y="834" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="18" font-weight="600" fill="#1E2230" text-anchor="middle">bhi</text>
+<path d="M 1430 846 L 1430 868" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="1395.0" y="873.0" width="70" height="26" rx="13.0" fill="#E2F4E9" stroke="#2C8A55" stroke-width="1.3"/>
+<text x="1430" y="890.5" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12.5" font-weight="600" fill="#1C6440" text-anchor="middle">UR</text>
+<text x="1430" y="930" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="400" fill="#C3C7CE" text-anchor="middle">·</text>
+<text x="82" y="838" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">word</text>
+<text x="82" y="890" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">tag</text>
+<text x="82" y="934" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="start">reading</text>
+</svg>

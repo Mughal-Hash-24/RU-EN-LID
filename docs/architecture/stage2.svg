@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="t d">
+<title id="t">RU-EN-LID Stage 2: candidate-conditioned XLM-R</title><desc id="d">Stage 1's tag and Urdu reading are added to each word piece's input embedding; with the new parameters at zero the model equals plain XLM-R. Twelve transformer layers read the sentence and a token head outputs UR, EN or OTH with a temperature-scaled confidence.</desc>
+<defs><filter id="shadow" x="-5%" y="-5%" width="110%" height="120%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1E2230" flood-opacity="0.07"/></filter><linearGradient id="both" x1="0" y1="0" x2="1" y2="0"><stop offset="0.5" stop-color="#FDF1DA"/><stop offset="0.5" stop-color="#EFE9FC"/></linearGradient><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#E7E4DC"/></pattern><marker id="ah1E2230" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1E2230"/></marker><marker id="ahB45309" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#B45309"/></marker><marker id="ah9C2F5E" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9C2F5E"/></marker><marker id="ah0F7B70" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0F7B70"/></marker><marker id="ah4338A0" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4338A0"/></marker><marker id="ah8A919E" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8A919E"/></marker></defs>
+<rect width="1600" height="900" fill="#FBFAF6"/><rect width="1600" height="900" fill="url(#dots)"/>
+<text x="60" y="66" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#1E2230" text-anchor="start">Stage 2 · Candidate-conditioned XLM-R</text>
+<text x="60" y="98" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#5E6675" text-anchor="start">Stage 1's evidence is added to each word's input embedding, so all 12 layers can weigh the lexicon against the sentence.</text>
+<text x="1540" y="64" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1E2230" text-anchor="end" letter-spacing="1.2">RU-EN-LID</text>
+<text x="1540" y="84" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8A919E" text-anchor="end">proposed architecture · stage 2</text>
+<line x1="60" y1="122" x2="1540" y2="122" stroke="#E5E2DA" stroke-width="1"/>
+<rect x="60" y="150" width="620" height="470" rx="16" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="84" y="186" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1E2230" text-anchor="start">Input embedding of one word piece</text>
+<text x="84" y="208" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">example: bht  (tag VAR, reading bohat)</text>
+<rect x="100" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.88" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="118" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.73" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="136" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.16" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="154" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.46" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="172" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.80" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="190" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.23" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="208" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.79" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="226" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.19" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="244" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.93" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="262" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.34" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="280" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.76" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="298" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.11" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="316" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.32" stroke="#1E2230" stroke-opacity="0.35"/>
+<rect x="334" y="242" width="15" height="22" rx="3" fill="#1E2230" fill-opacity="0.66" stroke="#1E2230" stroke-opacity="0.35"/>
+<text x="366" y="252" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1E2230" text-anchor="start">word-piece embedding</text>
+<text x="366" y="269" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="start">XLM-R vocabulary, pretrained</text>
+<text x="78" y="310" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#5E6675" text-anchor="start">+</text>
+<rect x="100" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.13" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="118" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.36" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="136" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.27" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="154" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.24" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="172" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.35" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="190" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.15" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="208" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.12" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="226" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.52" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="244" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.19" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="262" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.29" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="280" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.57" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="298" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.20" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="316" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.35" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="334" y="296" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.55" stroke="#7350C6" stroke-opacity="0.35"/>
+<text x="366" y="306" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1E2230" text-anchor="start">tag embedding · VAR</text>
+<text x="366" y="323" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="start">7 tags × 768, new, starts at 0</text>
+<text x="78" y="364" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#5E6675" text-anchor="start">+</text>
+<text x="96" y="366" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="1" font-weight="400" fill="#1E2230" text-anchor="start"></text>
+<rect x="100" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.27" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="118" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.24" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="136" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.20" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="154" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.37" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="172" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.11" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="190" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.34" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="208" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.11" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="226" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.26" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="244" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.17" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="262" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.25" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="280" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.34" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="298" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.32" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="316" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.40" stroke="#7350C6" stroke-opacity="0.35"/>
+<rect x="334" y="350" width="15" height="22" rx="3" fill="#7350C6" fill-opacity="0.25" stroke="#7350C6" stroke-opacity="0.35"/>
+<text x="366" y="360" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1E2230" text-anchor="start">g × mean(reading pieces)</text>
+<text x="366" y="377" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="start">'bohat', ≤ 4 pieces · gate g starts at 0</text>
+<line x1="100" y1="394" x2="349" y2="394" stroke="#1E2230" stroke-width="1.6"/>
+<rect x="100" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.42" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="118" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.33" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="136" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.90" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="154" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.63" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="172" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.19" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="190" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.27" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="208" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.80" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="226" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.77" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="244" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.11" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="262" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.19" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="280" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.33" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="298" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.81" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="316" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.28" stroke="#0F7B70" stroke-opacity="0.35"/>
+<rect x="334" y="408" width="15" height="22" rx="3" fill="#0F7B70" fill-opacity="0.43" stroke="#0F7B70" stroke-opacity="0.35"/>
+<text x="366" y="418" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1E2230" text-anchor="start">e(piece)</text>
+<text x="366" y="435" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#5E6675" text-anchor="start">+ position · LayerNorm → layers</text>
+<rect x="84" y="468" width="572" height="128" rx="12" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1.1"/>
+<text x="104" y="496" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#0F7B70" text-anchor="start">Safe start</text>
+<text x="104" y="520" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">Tag table and gate start at zero, so at step 0 the model is</text>
+<text x="104" y="539" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">exactly the plain XLM-R classifier (tested to 1e-6). Any later</text>
+<text x="104" y="558" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">difference is learned from data, and the ablation changes</text>
+<text x="104" y="577" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#1E2230" text-anchor="start">nothing else.</text>
+<rect x="740" y="150" width="400" height="470" rx="16" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="764" y="186" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1E2230" text-anchor="start">Encoder</text>
+<text x="764" y="208" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">xlm-roberta-base · 12 layers · 768-d</text>
+<rect x="786" y="258" width="300" height="26" rx="7" fill="#0F7B70" stroke="#0F7B70" stroke-width="1"/>
+<text x="936" y="276" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#FFFFFF" text-anchor="middle">Transformer layer 12</text>
+<rect x="790" y="292" width="292" height="26" rx="7" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="936" y="310" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0F7B70" text-anchor="middle">Transformer layer</text>
+<rect x="794" y="326" width="284" height="26" rx="7" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="936" y="344" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0F7B70" text-anchor="middle">Transformer layer</text>
+<rect x="798" y="360" width="276" height="26" rx="7" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="936" y="378" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0F7B70" text-anchor="middle">Transformer layer</text>
+<rect x="802" y="394" width="268" height="26" rx="7" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="936" y="412" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0F7B70" text-anchor="middle">Transformer layer</text>
+<rect x="806" y="428" width="260" height="26" rx="7" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="936" y="446" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#0F7B70" text-anchor="middle">Transformer layer</text>
+<text x="936" y="480" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#0F7B70" text-anchor="middle">⋮   × 12</text>
+<rect x="779.0" y="517.0" width="58" height="26" rx="13.0" fill="#E4EDFC" stroke="#2F62C0" stroke-width="1.3"/>
+<text x="808" y="534.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#1D4594" text-anchor="middle">box</text>
+<path d="M 808 516 L 808 496" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="845.0" y="517.0" width="58" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="874" y="534.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#8A5300" text-anchor="middle">band</text>
+<path d="M 874 516 L 874 496" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="911.0" y="517.0" width="58" height="26" rx="13.0" fill="#EFE9FC" stroke="#7350C6" stroke-width="1.3"/>
+<text x="940" y="534.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#4F3196" text-anchor="middle">nhi</text>
+<path d="M 940 516 L 940 496" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="977.0" y="517.0" width="58" height="26" rx="13.0" fill="#E2F4E9" stroke="#2C8A55" stroke-width="1.3"/>
+<text x="1006" y="534.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#1C6440" text-anchor="middle">tha</text>
+<path d="M 1006 516 L 1006 496" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<rect x="1043.0" y="517.0" width="58" height="26" rx="13.0" fill="#FDF1DA" stroke="#D4870E" stroke-width="1.3"/>
+<text x="1072" y="534.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#8A5300" text-anchor="middle">main</text>
+<path d="M 1072 516 L 1072 496" fill="none" stroke="#8A919E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah8A919E)"/>
+<text x="936" y="574" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="middle">every word attends to the whole sentence;</text>
+<text x="936" y="592" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="middle">chip colour = Stage-1 tag fed in</text>
+<path d="M 684 418 L 736 418" fill="none" stroke="#0F7B70" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah0F7B70)"/>
+<rect x="1200" y="150" width="340" height="470" rx="16" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<text x="1224" y="186" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1E2230" text-anchor="start">Head and confidence</text>
+<rect x="1224" y="222" width="292" height="52" rx="10" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="1240" y="244" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F7B70" text-anchor="start">token head</text>
+<text x="1240" y="263" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="start">linear, 768 → 3 logits z per piece</text>
+<rect x="1224" y="292" width="292" height="52" rx="10" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="1240" y="314" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" font-weight="700" fill="#0F7B70" text-anchor="start">softmax(z / T)</text>
+<text x="1240" y="333" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="start">T fitted on validation NLL</text>
+<path d="M 1370 276 L 1370 290" fill="none" stroke="#0F7B70" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah0F7B70)"/>
+<rect x="1224" y="362" width="292" height="52" rx="10" fill="#E5F4F1" stroke="#0F7B70" stroke-width="1"/>
+<text x="1240" y="384" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F7B70" text-anchor="start">first piece of each word</text>
+<text x="1240" y="403" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#5E6675" text-anchor="start">one prediction per word</text>
+<path d="M 1370 346 L 1370 360" fill="none" stroke="#0F7B70" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah0F7B70)"/>
+<text x="1224" y="452" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1E2230" text-anchor="start">Output contract</text>
+<rect x="1227.0" y="471.0" width="54" height="26" rx="13.0" fill="#E2F4E9" stroke="#2C8A55" stroke-width="1.3"/>
+<text x="1254" y="488.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#1C6440" text-anchor="middle">UR</text>
+<rect x="1291.0" y="471.0" width="54" height="26" rx="13.0" fill="#E4EDFC" stroke="#2F62C0" stroke-width="1.3"/>
+<text x="1318" y="488.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#1D4594" text-anchor="middle">EN</text>
+<rect x="1355.0" y="471.0" width="54" height="26" rx="13.0" fill="#F3F4F6" stroke="#9AA0A6" stroke-width="1.3"/>
+<text x="1382" y="488.32" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="12" font-weight="600" fill="#5F6368" text-anchor="middle">OTH</text>
+<text x="1224" y="526" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" font-weight="400" fill="#1E2230" text-anchor="start">label = argmax, confidence = max p</text>
+<text x="1224" y="552" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">Tags go in; only UR / EN / OTH</text>
+<text x="1224" y="571" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">come out. The confidence decides</text>
+<text x="1224" y="590" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">what Stage 3 may touch.</text>
+<path d="M 1144 418 L 1196 418" fill="none" stroke="#0F7B70" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#ah0F7B70)"/>
+<text x="60" y="660" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#0F7B70" text-anchor="start" letter-spacing="1.2">TRAINING · src/classifier/train.py --candidates none | tag | tag+reading</text>
+<rect x="60" y="676" width="280" height="178" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<rect x="60" y="676" width="5" height="178" rx="2" fill="#0F7B70"/>
+<text x="82" y="710" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1E2230" text-anchor="start">Tag dropout 15 %</text>
+<text x="82" y="740" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">per word, the tag becomes UNK</text>
+<text x="82" y="762" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">and the reading is hidden, so</text>
+<text x="82" y="784" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">the model cannot lean on a</text>
+<text x="82" y="806" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">lexicon that is mostly UNK</text>
+<rect x="355" y="676" width="280" height="178" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<rect x="355" y="676" width="5" height="178" rx="2" fill="#0F7B70"/>
+<text x="377" y="710" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1E2230" text-anchor="start">Two learning rates</text>
+<text x="377" y="740" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">encoder at the usual rate</text>
+<text x="377" y="762" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">(3e-5 in the iteration-1 run);</text>
+<text x="377" y="784" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">new tag and gate params</text>
+<text x="377" y="806" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">at 1e-3 (--cand-lr)</text>
+<rect x="650" y="676" width="280" height="178" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<rect x="650" y="676" width="5" height="178" rx="2" fill="#0F7B70"/>
+<text x="672" y="710" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1E2230" text-anchor="start">Three ablation arms</text>
+<text x="672" y="740" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">none · tag · tag+reading</text>
+<text x="672" y="762" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">same data, seeds and</text>
+<text x="672" y="784" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">hyperparameters; only the</text>
+<text x="672" y="806" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">input evidence differs</text>
+<rect x="945" y="676" width="280" height="178" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<rect x="945" y="676" width="5" height="178" rx="2" fill="#0F7B70"/>
+<text x="967" y="710" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1E2230" text-anchor="start">Labels</text>
+<text x="967" y="740" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">first piece of a word carries</text>
+<text x="967" y="762" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">its label; other pieces and</text>
+<text x="967" y="784" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">unresolved (IGN) words are</text>
+<text x="967" y="806" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">skipped by the loss</text>
+<rect x="1240" y="676" width="300" height="178" rx="14" fill="#FFFFFF" stroke="#E5E2DA" stroke-width="1.0" filter="url(#shadow)"/>
+<rect x="1240" y="676" width="5" height="178" rx="2" fill="#0F7B70"/>
+<text x="1262" y="710" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#1E2230" text-anchor="start">Calibration</text>
+<text x="1262" y="740" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">one temperature T, fitted</text>
+<text x="1262" y="762" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">after training on validation</text>
+<text x="1262" y="784" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">NLL; labels never change,</text>
+<text x="1262" y="806" font-family="Inter, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#5E6675" text-anchor="start">re-tune τ afterwards</text>
+</svg>

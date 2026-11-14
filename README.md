@@ -39,16 +39,11 @@ downloaded models. Stage 2 requires `torch`/`transformers`/`accelerate` and a tr
 
 ## 3. Architecture
 
-```mermaid
-flowchart LR
-    A["Input sentence<br/>(Roman Urdu–English)"] --> B["Stage 1 — Candidate expansion<br/>English lexicon ∩ Roman Urdu lexicon<br/>attested variant pairs<br/>surface form kept"]
-    B --> C["Stage 2 — Context-aware classifier<br/>XLM-R token classification<br/>fine-tuned on COMI-LINGUA<br/>Latin-script proxy (hi → UR)"]
-    C --> D["Stage 3 — Rule-based verification<br/>lexicon priors · confidence gating ·<br/>consistency checks (conservative)"]
-    D --> E["Token labels (UR / EN)<br/>+ category + per-rule attribution"]
+![Proposed architecture: overview](docs/architecture/overview.svg)
 
-    R["Resources<br/>seed lexicons · variant_pairs.tsv<br/>Dakshina (planned)"] --> B
-    T["Training data (proxy)<br/>COMI-LINGUA Latin-script splits<br/>scripts/prepare_comi_lingua.py"] -.-> C
-```
+Stage 1 tags each word from the lexicons without rewriting it; Stage 2 (XLM-R) reads the sentence with
+those tags and gives each word UR, EN or OTH with a confidence; words below the gate τ go to Stage 3,
+which applies one resolver per tag. Detailed diagrams for each stage: [docs/architecture](docs/architecture/README.md).
 
 ## 4. Repository layout
 
@@ -59,6 +54,7 @@ ruen-lid-pipeline/
 ├── LICENSE                    # MIT for the code; data/model licences are noted in §11
 ├── requirements.txt           # Stage-2 training dependencies
 ├── .github/workflows/tests.yml # standard-library test suite (Python 3.10/3.12/3.13)
+├── docs/architecture/         # proposed-architecture diagrams (SVG + 2x PNG), built by scripts/make_architecture_diagrams.py
 ├── data/
 │   ├── README.md              # dataset links, licences, roles
 │   ├── fetch_data.py          # downloads into data/cache (never committed)
