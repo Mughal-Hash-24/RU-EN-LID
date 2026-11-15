@@ -47,19 +47,21 @@ def main(argv: list[str] | None = None) -> int:
     import torch
 
     from ..candidate_expansion.expander import CandidateExpander
-    from ..pipeline import DEFAULT_RESOURCES
+    from ..pipeline import resolve_resources
     from .dataset import IGNORE_LABEL, read_any
     from .predict import TokenLIDPredictor
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--valid", required=True, help="validation CSV (never the test split)")
-    parser.add_argument("--resources", default=DEFAULT_RESOURCES)
+    parser.add_argument(
+        "--resources", help="Stage-1 lexicon folder (default: the one saved with --checkpoint, else data/resources)"
+    )
     args = parser.parse_args(argv)
 
     predictor = TokenLIDPredictor(args.checkpoint)
     predictor.temperature = 1.0
-    expander = CandidateExpander.from_resources(args.resources)
+    expander = CandidateExpander.from_resources(resolve_resources(args.checkpoint, args.resources)[0])
     label2id = {label: index for index, label in predictor.id2label.items()}
     all_logits, all_labels = [], []
     for sentence in read_any(args.valid):

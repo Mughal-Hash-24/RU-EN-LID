@@ -35,7 +35,7 @@ sys.path.insert(0, str(ROOT))
 from src.candidate_expansion.expander import CandidateExpander  # noqa: E402
 from src.classifier.dataset import IGNORE_LABEL, read_any  # noqa: E402
 from src.eval.calibration import expected_calibration_error, fit_temperature, reliability, softmax  # noqa: E402
-from src.pipeline import DEFAULT_RESOURCES  # noqa: E402
+from src.pipeline import resolve_resources  # noqa: E402
 from src.verification.rules import DEFAULT_TAU, apply_rules  # noqa: E402
 from src.verification.tau import (  # noqa: E402
     ScoredSentence,
@@ -463,7 +463,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--calibration", action="store_true", help="also fit and report temperature scaling")
     parser.add_argument("--out-dir", default="results/stage3_tau", help="summary.md, sweep.json and sweep.csv go here")
     parser.add_argument("--no-save", action="store_true", help="do not write <checkpoint>/stage3.json")
-    parser.add_argument("--resources", default=DEFAULT_RESOURCES)
+    parser.add_argument(
+        "--resources", help="Stage-1 lexicon folder (default: the one saved with --checkpoint, else data/resources)"
+    )
     parser.add_argument("--device", default="auto", help="cuda, cpu or auto")
     args = parser.parse_args(argv)
 
@@ -472,7 +474,7 @@ def main(argv: list[str] | None = None) -> int:
     from src.classifier.predict import TokenLIDPredictor
 
     device = ("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else args.device
-    expander = CandidateExpander.from_resources(args.resources)
+    expander = CandidateExpander.from_resources(resolve_resources(str(args.checkpoint), args.resources)[0])
     predictor = TokenLIDPredictor(args.checkpoint, device=device)
     id2label = {int(index): label for index, label in predictor.id2label.items()}
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 from pathlib import Path
 
 from ..eval.metrics import accuracy, macro_f1
@@ -136,12 +137,14 @@ def main(argv: list[str] | None = None) -> int:
     use_candidates = args.candidates != "none"
     use_readings = args.candidates == "tag+reading"
     expander = None
+    resources = None
     if use_candidates:
         from ..candidate_expansion.expander import CandidateExpander
         from ..pipeline import DEFAULT_RESOURCES
         from .candidate_model import CandidateCollator, CandidateXLMRForTokenClassification
 
-        expander = CandidateExpander.from_resources(args.resources or DEFAULT_RESOURCES)
+        resources = Path(args.resources or DEFAULT_RESOURCES)
+        expander = CandidateExpander.from_resources(str(resources))
         config = AutoConfig.from_pretrained(model_name, num_labels=len(LABELS), id2label=id2label, label2id=label2id)
         config.num_cand_tags = len(CAND_TAGS)
         config.candidate_mode = args.candidates  # read back by predict.py
@@ -270,6 +273,15 @@ def main(argv: list[str] | None = None) -> int:
         print(final_eval)
     trainer.save_model(args.out)
     tokenizer.save_pretrained(args.out)
+    if resources is not None:
+        # The Stage-1 tags this model learned depend on these lexicons; the pipeline reuses them by default.
+        from ..pipeline import CHECKPOINT_RESOURCES, RESOURCE_FILES
+
+        saved = Path(args.out, CHECKPOINT_RESOURCES)
+        saved.mkdir(parents=True, exist_ok=True)
+        for name in (*RESOURCE_FILES, "induction_report.json"):
+            if (resources / name).is_file():
+                shutil.copy(resources / name, saved / name)
     summary = {
         "final_eval": final_eval,
         "best_metric": trainer.state.best_metric,

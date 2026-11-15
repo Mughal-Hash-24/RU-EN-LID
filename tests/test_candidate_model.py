@@ -133,7 +133,11 @@ class CandidateModelTest(unittest.TestCase):
         reloaded = self.model_class.from_pretrained(out)
         self.assertEqual(reloaded.config.candidate_mode, "tag+reading")
         self.assertGreater(float(reloaded.cand_embeddings.weight.abs().sum()), 0.0)  # it trained
-        records = LIDPipeline.from_resources(checkpoint=out).run_records(" ".join(EXAMPLE))
+        saved = os.path.join(out, "stage1_resources")  # the lexicons its Stage-1 tags came from
+        self.assertEqual(sorted(os.listdir(saved)), ["english_seed.txt", "roman_urdu_seed.txt", "variant_pairs.tsv"])
+        pipeline = LIDPipeline.from_resources(checkpoint=out)
+        self.assertEqual(pipeline.resources_source, "saved with the checkpoint")
+        records = pipeline.run_records(" ".join(EXAMPLE))
         self.assertEqual([record["token"] for record in records], EXAMPLE)
         self.assertTrue(all(record["label"] in {"UR", "EN", "OTH"} for record in records))
         self.assertTrue(all(record["deferred"] == (record["confidence"] < 0.55) for record in records))

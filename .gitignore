@@ -9,3 +9,4 @@ results/learning_curve/progress.log
 experiments/*/results/logs/
 experiments/*/results/progress.log
 .DS_Store
+data/resources_induced/

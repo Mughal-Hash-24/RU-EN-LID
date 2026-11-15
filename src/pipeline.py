@@ -12,6 +12,19 @@ from .verification.rules import DEFAULT_TAU, apply_context, apply_rules
 from .verification.tau import resolve_tau
 
 DEFAULT_RESOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "resources")
+# A candidate-conditioned checkpoint keeps a copy of the Stage-1 lexicons it was trained with here (train.py):
+# its Stage-1 tags mean at inference what they meant in training only if the same lexicons produce them.
+CHECKPOINT_RESOURCES = "stage1_resources"
+RESOURCE_FILES = ("english_seed.txt", "roman_urdu_seed.txt", "variant_pairs.tsv")
+
+
+def resolve_resources(checkpoint: str | None, resources_dir: str | None = None) -> tuple[str, str]:
+    """Stage-1 lexicon folder for a run, and where it came from: explicit > saved with the checkpoint > seeds."""
+    if resources_dir:
+        return resources_dir, "explicit"
+    if checkpoint and os.path.isdir(os.path.join(checkpoint, CHECKPOINT_RESOURCES)):
+        return os.path.join(checkpoint, CHECKPOINT_RESOURCES), "saved with the checkpoint"
+    return DEFAULT_RESOURCES, "default"
 
 
 # Model-free stand-in for Stage 2, used for demos and tests until a checkpoint is trained.
@@ -63,26 +76,32 @@ class LIDPipeline:
         self.predictor = predictor
         self.tau = tau
         self.tau_source = tau_source
+        self.resources_dir: str | None = None  # set by from_resources()
+        self.resources_source = "explicit"
         # 0 = context decoder off (iteration-1 behaviour). Tune on validation with scripts/tune_stage3.py.
         self.context_penalty = context_penalty
 
     @classmethod
     def from_resources(
         cls,
-        resources_dir: str = DEFAULT_RESOURCES,
+        resources_dir: str | None = None,
         checkpoint: str | None = None,
         tau: float | None = None,
         context_penalty: float = 0.0,
     ) -> LIDPipeline:
-        """tau=None: the value tuned for the checkpoint (its stage3.json, local or on the hub), else DEFAULT_TAU."""
+        """tau=None: the value tuned for the checkpoint (its stage3.json, local or on the hub), else DEFAULT_TAU.
+        resources_dir=None: the lexicons saved with the checkpoint, else data/resources."""
         tau, source = resolve_tau(tau, checkpoint)
+        resources_dir, resources_source = resolve_resources(checkpoint, resources_dir)
         expander = CandidateExpander.from_resources(resources_dir)
         predictor = None
         if checkpoint:
             from .classifier.predict import TokenLIDPredictor
 
             predictor = TokenLIDPredictor(checkpoint)
-        return cls(expander, predictor, tau, context_penalty, source)
+        pipeline = cls(expander, predictor, tau, context_penalty, source)
+        pipeline.resources_dir, pipeline.resources_source = resources_dir, resources_source
+        return pipeline
 
     def run(self, text: str):
         tokens = self.expander.expand(text)
@@ -150,7 +169,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the RU-EN LID pipeline on text.")
     parser.add_argument("--text", required=True)
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
-    parser.add_argument("--resources", default=DEFAULT_RESOURCES)
+    parser.add_argument(
+        "--resources", help="Stage-1 lexicon folder (default: the one saved with --checkpoint, else data/resources)"
+    )
     parser.add_argument(
         "--tau",
         type=probability,
@@ -165,6 +186,7 @@ def main(argv: list[str] | None = None) -> int:
     pipeline = LIDPipeline.from_resources(
         args.resources, checkpoint=args.checkpoint, tau=args.tau, context_penalty=args.context_penalty
     )
+    print(f"[stage1] resources = {pipeline.resources_dir} ({pipeline.resources_source})", file=sys.stderr)
     print(f"[stage3] tau = {pipeline.tau} ({pipeline.tau_source})", file=sys.stderr)
     records = pipeline.run_records(args.text)
     if args.json:

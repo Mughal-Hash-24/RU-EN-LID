@@ -19,7 +19,7 @@ from src.candidate_expansion.variants import canonical_of, urduphone
 from src.classifier.dataset import read_any
 from src.classifier.train import align_labels
 from src.eval.metrics import accuracy, cmi, macro_f1, summarize
-from src.pipeline import LIDPipeline
+from src.pipeline import CHECKPOINT_RESOURCES, DEFAULT_RESOURCES, RESOURCE_FILES, LIDPipeline, resolve_resources
 from src.verification.rules import DEFAULT_TAU, apply_rules
 from src.verification.tau import (
     STAGE3_CONFIG,
@@ -182,6 +182,34 @@ class TauPrecedenceTest(unittest.TestCase):
             self.assertEqual(LIDPipeline.from_resources(RESOURCES, checkpoint=folder).tau, 0.0)
             self.assertEqual(LIDPipeline.from_resources(RESOURCES, checkpoint=folder, tau=0.8).tau, 0.8)
         self.assertEqual(LIDPipeline.from_resources(RESOURCES).tau, DEFAULT_TAU)  # fallback mode
+
+
+class ResourcePrecedenceTest(unittest.TestCase):
+    def test_explicit_beats_saved_with_the_checkpoint_beats_the_seeds(self):
+        with tempfile.TemporaryDirectory() as folder:
+            self.assertEqual(resolve_resources(None), (DEFAULT_RESOURCES, "default"))
+            self.assertEqual(resolve_resources(folder), (DEFAULT_RESOURCES, "default"))  # plain checkpoint
+            saved = os.path.join(folder, CHECKPOINT_RESOURCES)
+            os.mkdir(saved)
+            self.assertEqual(resolve_resources(folder), (saved, "saved with the checkpoint"))
+            self.assertEqual(resolve_resources(folder, RESOURCES), (RESOURCES, "explicit"))
+            self.assertEqual(resolve_resources("someone/some-model"), (DEFAULT_RESOURCES, "default"))  # hub id
+
+    def test_pipeline_reads_the_lexicons_saved_with_the_checkpoint(self):
+        with tempfile.TemporaryDirectory() as folder, mock.patch("src.classifier.predict.TokenLIDPredictor"):
+            saved = os.path.join(folder, CHECKPOINT_RESOURCES)
+            os.mkdir(saved)
+            for name in RESOURCE_FILES:
+                with open(os.path.join(RESOURCES, name), encoding="utf-8") as source:
+                    text = source.read()
+                if name == "english_seed.txt":
+                    text += "\nwo\n"  # this copy also lists "wo" as English
+                with open(os.path.join(saved, name), "w", encoding="utf-8") as target:
+                    target.write(text)
+            pipeline = LIDPipeline.from_resources(checkpoint=folder)
+            self.assertEqual(pipeline.resources_source, "saved with the checkpoint")
+            self.assertEqual(pipeline.expander.expand_token("wo").category, "ambiguous")
+        self.assertEqual(LIDPipeline.from_resources().expander.expand_token("wo").category, "standard")
 
 
 class MetricsTest(unittest.TestCase):

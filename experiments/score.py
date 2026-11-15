@@ -23,7 +23,7 @@ from src.candidate_expansion.expander import CandidateExpander  # noqa: E402
 from src.classifier.dataset import IGNORE_LABEL, read_any  # noqa: E402
 from src.classifier.predict import TokenLIDPredictor  # noqa: E402
 from src.eval.metrics import summarize  # noqa: E402
-from src.pipeline import DEFAULT_RESOURCES  # noqa: E402
+from src.pipeline import resolve_resources  # noqa: E402
 from src.verification.rules import DEFAULT_TAU, apply_rules  # noqa: E402
 
 EVAL_SETS = {
@@ -74,6 +74,9 @@ def report_for(rows: list[dict], key: str, baseline_key: str | None) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--checkpoint", required=True)
+    parser.add_argument(
+        "--resources", help="Stage-1 lexicon folder (default: the one saved with --checkpoint, else data/resources)"
+    )
     parser.add_argument("--out", required=True, help="JSON report path")
     parser.add_argument("--predictions-dir", help="write per-word predictions here (git-ignored location)")
     parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
@@ -83,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
     import torch
 
     device = ("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else args.device
-    expander = CandidateExpander.from_resources(DEFAULT_RESOURCES)
+    expander = CandidateExpander.from_resources(resolve_resources(args.checkpoint, args.resources)[0])
     predictor = TokenLIDPredictor(args.checkpoint, device=device)
 
     checkpoint = Path(args.checkpoint).resolve()

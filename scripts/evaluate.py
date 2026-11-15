@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from src.classifier.dataset import read_any  # noqa: E402
 from src.eval.metrics import summarize  # noqa: E402
 from src.eval.selective import collect_rows, selective_markdown, selective_report  # noqa: E402
-from src.pipeline import DEFAULT_RESOURCES, LIDPipeline, non_negative, probability  # noqa: E402
+from src.pipeline import LIDPipeline, non_negative, probability  # noqa: E402
 from src.verification.rules import DEFAULT_TAU  # noqa: E402
 
 
@@ -63,7 +63,9 @@ def main(argv: list[str] | None = None) -> int:
         help=f"Stage 3 threshold (default: the value tuned for --checkpoint by scripts/tune_tau.py, "
         f"else {DEFAULT_TAU}; --tau 0 = Stage 2 alone)",
     )
-    parser.add_argument("--resources", default=DEFAULT_RESOURCES, help="Stage-1 lexicon folder")
+    parser.add_argument(
+        "--resources", help="Stage-1 lexicon folder (default: the one saved with --checkpoint, else data/resources)"
+    )
     parser.add_argument(
         "--context-penalty", type=non_negative, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
     )
@@ -79,6 +81,7 @@ def main(argv: list[str] | None = None) -> int:
     pipeline = LIDPipeline.from_resources(
         args.resources, checkpoint=args.checkpoint, tau=args.tau, context_penalty=args.context_penalty
     )
+    print(f"[stage1] resources = {pipeline.resources_dir} ({pipeline.resources_source})", file=sys.stderr)
     print(f"[stage3] tau = {pipeline.tau} ({pipeline.tau_source})", file=sys.stderr)
     rows = collect_rows(pipeline, sentences)
 
