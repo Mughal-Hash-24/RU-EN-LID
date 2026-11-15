@@ -1,0 +1,80 @@
+{
+  "near_copy_threshold": 0.9,
+  "after_cleaning": {
+    "train_vs_test": {
+      "sentences": 750,
+      "same_text": 0,
+      "same_words": 0,
+      "near_copy": 10,
+      "max_jaccard": 0.9655,
+      "jaccard_at_least": {
+        "0.5": 20,
+        "0.6": 19,
+        "0.7": 19,
+        "0.8": 16,
+        "0.9": 10
+      }
+    },
+    "valid_vs_test": {
+      "sentences": 750,
+      "same_text": 0,
+      "same_words": 0,
+      "near_copy": 1,
+      "max_jaccard": 0.9524,
+      "jaccard_at_least": {
+        "0.5": 4,
+        "0.6": 4,
+        "0.7": 3,
+        "0.8": 3,
+        "0.9": 1
+      }
+    },
+    "train_vs_valid": {
+      "sentences": 727,
+      "same_text": 0,
+      "same_words": 0,
+      "near_copy": 4,
+      "max_jaccard": 0.9565,
+      "jaccard_at_least": {
+        "0.5": 17,
+        "0.6": 7,
+        "0.7": 6,
+        "0.8": 4,
+        "0.9": 4
+      }
+    }
+  },
+  "before_cleaning": {
+    "train_file_vs_test": {
+      "sentences": 750,
+      "same_text": 584,
+      "same_words": 585,
+      "near_copy": 585,
+      "max_jaccard": 1.0,
+      "jaccard_at_least": {
+        "0.5": 591,
+        "0.6": 591,
+        "0.7": 590,
+        "0.8": 589,
+        "0.9": 585
+      }
+    }
+  },
+  "roman_train_sentences_before_cleaning": 7950,
+  "test_sentences_with_near_copy": 11,
+  "test_accuracy_stage2": {
+    "predictions": "data/cache/experiments/kept_model/predictions/test.csv",
+    "all": {
+      "words": 15207,
+      "accuracy": 0.9618
+    },
+    "without_near_copies": {
+      "words": 14978,
+      "accuracy": 0.9615
+    },
+    "near_copies_only": {
+      "words": 229,
+      "accuracy": 0.9782
+    }
+  }
+}
