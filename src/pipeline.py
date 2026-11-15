@@ -12,38 +12,40 @@ from .verification.rules import DEFAULT_TAU, apply_context, apply_rules
 DEFAULT_RESOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "resources")
 
 
+# Model-free stand-in for Stage 2, used for demos and tests until a checkpoint is trained.
+# Per kind of word: (label, confidence) for the gate and the lexicon rules, and the
+# distribution the context decoder sees. The confidences are set below the default tau on
+# purpose for variants and ambiguous words, so the fallback exercises Stage 3; they are not
+# the max of the distribution, and the decoder uses only the distribution.
+_HEURISTIC: dict[str, tuple[str, float, dict[str, float]]] = {
+    "variant": ("UR", 0.40, {"UR": 0.6, "EN": 0.4, "OTH": 0.0}),
+    "ambiguous": ("EN", 0.30, {"UR": 0.5, "EN": 0.5, "OTH": 0.0}),
+    "english": ("EN", 0.90, {"UR": 0.05, "EN": 0.9, "OTH": 0.05}),
+    "urdu": ("UR", 0.90, {"UR": 0.9, "EN": 0.05, "OTH": 0.05}),
+    "none": ("OTH", 0.0, {"UR": 0.0, "EN": 0.0, "OTH": 1.0}),
+}
+
+
+def _heuristic_kind(info: TokenCandidates) -> str:
+    if info.category in {"variant", "both"}:
+        return "variant"
+    if info.category == "ambiguous":
+        return "ambiguous"
+    if info.english_reading and not info.urdu_canonicals:
+        return "english"
+    if info.urdu_canonicals and not info.english_reading:
+        return "urdu"
+    return "none"
+
+
 def heuristic_predictions(tokens: list[TokenCandidates]) -> list[tuple[str, float]]:
-    """Model-free fallback used for demos/tests until a checkpoint is trained."""
-    predictions: list[tuple[str, float]] = []
-    for info in tokens:
-        if info.category in {"variant", "both"}:
-            predictions.append(("UR", 0.40))
-        elif info.category == "ambiguous":
-            predictions.append(("EN", 0.30))
-        elif info.english_reading and not info.urdu_canonicals:
-            predictions.append(("EN", 0.90))
-        elif info.urdu_canonicals and not info.english_reading:
-            predictions.append(("UR", 0.90))
-        else:
-            predictions.append(("OTH", 0.0))
-    return predictions
+    """Model-free fallback: (label, confidence) per word."""
+    return [_HEURISTIC[_heuristic_kind(info)][:2] for info in tokens]
 
 
 def heuristic_distributions(tokens: list[TokenCandidates]) -> list[dict[str, float]]:
-    """Stand-in Stage-2 distributions for the model-free fallback (ambiguous = no preference)."""
-    distributions: list[dict[str, float]] = []
-    for info in tokens:
-        if info.category == "ambiguous":
-            distributions.append({"UR": 0.5, "EN": 0.5, "OTH": 0.0})
-        elif info.category in {"variant", "both"}:
-            distributions.append({"UR": 0.6, "EN": 0.4, "OTH": 0.0})
-        elif info.english_reading and not info.urdu_canonicals:
-            distributions.append({"UR": 0.05, "EN": 0.9, "OTH": 0.05})
-        elif info.urdu_canonicals and not info.english_reading:
-            distributions.append({"UR": 0.9, "EN": 0.05, "OTH": 0.05})
-        else:
-            distributions.append({"UR": 0.0, "EN": 0.0, "OTH": 1.0})
-    return distributions
+    """Model-free fallback: the distribution the context decoder sees (ambiguous = no preference)."""
+    return [dict(_HEURISTIC[_heuristic_kind(info)][2]) for info in tokens]
 
 
 class LIDPipeline:
@@ -67,7 +69,7 @@ class LIDPipeline:
         checkpoint: str | None = None,
         tau: float = DEFAULT_TAU,
         context_penalty: float = 0.0,
-    ) -> "LIDPipeline":
+    ) -> LIDPipeline:
         expander = CandidateExpander.from_resources(resources_dir)
         predictor = None
         if checkpoint:
@@ -87,7 +89,7 @@ class LIDPipeline:
             distributions = heuristic_distributions(tokens)
         decisions = apply_rules(tokens, predictions, self.tau)
         decisions = apply_context(tokens, decisions, distributions, self.context_penalty)
-        return list(zip(tokens, decisions))
+        return list(zip(tokens, decisions, strict=True))
 
     def run_records(self, text: str) -> list[dict]:
         return [
@@ -122,14 +124,30 @@ def format_records(records: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def probability(text: str) -> float:
+    """argparse type for tau: a number in [0, 1]."""
+    value = float(text)
+    if not 0.0 <= value <= 1.0:
+        raise argparse.ArgumentTypeError(f"must be between 0 and 1, got {value}")
+    return value
+
+
+def non_negative(text: str) -> float:
+    """argparse type for the context penalty: a number >= 0."""
+    value = float(text)
+    if value < 0:
+        raise argparse.ArgumentTypeError(f"must be >= 0, got {value}")
+    return value
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the RU-EN LID pipeline on text.")
     parser.add_argument("--text", required=True)
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
     parser.add_argument("--resources", default=DEFAULT_RESOURCES)
-    parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
+    parser.add_argument("--tau", type=probability, default=DEFAULT_TAU)
     parser.add_argument(
-        "--context-penalty", type=float, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
+        "--context-penalty", type=non_negative, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
     )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)

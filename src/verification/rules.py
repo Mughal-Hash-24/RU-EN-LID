@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from ..candidate_expansion.expander import TokenCandidates
 
 DEFAULT_TAU = 0.55
+VARIANT_CATEGORIES = frozenset({"variant", "both"})
 
 
 @dataclass(frozen=True)
@@ -41,43 +42,37 @@ def apply_rules(
     tau: float = DEFAULT_TAU,
 ) -> list[Decision]:
     decisions: list[Decision] = []
-    for info, (label, confidence) in zip(tokens, predictions):
-        final = label
-        rules: list[str] = []
-
-        if info.category in {"variant", "both"} and final == "EN" and confidence < tau:
-            final = "UR"
-            rules.append("variant-consistency")
-        elif (
-            info.category == "standard"
-            and info.english_reading
-            and not info.urdu_canonicals
-            and final == "UR"
-            and confidence < tau
-        ):
-            final = "EN"
-            rules.append("english-lexicon-prior")
-        elif (
-            info.category == "standard"
-            and info.urdu_canonicals
-            and not info.english_reading
-            and final == "EN"
-            and confidence < tau
-        ):
-            final = "UR"
-            rules.append("urdu-lexicon-prior")
-
+    for info, (label, confidence) in zip(tokens, predictions, strict=True):
+        deferred = confidence < tau
+        rule = _lexicon_rule(info, label) if deferred else None
         decisions.append(
             Decision(
                 token=info.surface,
-                label=final,
+                label=_RULE_LABEL[rule] if rule else label,
                 confidence=confidence,
-                rules=tuple(rules),
-                deferred=confidence < tau,
+                rules=(rule,) if rule else (),
+                deferred=deferred,
                 stage2_label=label,
             )
         )
     return decisions
+
+
+# The label each lexicon rule assigns.
+_RULE_LABEL = {"variant-consistency": "UR", "english-lexicon-prior": "EN", "urdu-lexicon-prior": "UR"}
+
+
+def _lexicon_rule(info: TokenCandidates, label: str) -> str | None:
+    """The lexicon rule that overrides a deferred Stage-2 label, if any (at most one fires)."""
+    if info.category in VARIANT_CATEGORIES:
+        return "variant-consistency" if label == "EN" else None
+    if info.category != "standard":
+        return None
+    if label == "UR" and info.english_reading and not info.urdu_canonicals:
+        return "english-lexicon-prior"
+    if label == "EN" and info.urdu_canonicals and not info.english_reading:
+        return "urdu-lexicon-prior"
+    return None
 
 
 # Each Stage-1 category gets one Stage-3 resolver. Standard words have the lexicon priors and
@@ -108,11 +103,11 @@ def apply_context(
         None
         if decision.deferred and not decision.rules and info.category in CONTEXT_CATEGORIES
         else decision.label
-        for info, decision in zip(tokens, decisions)
+        for info, decision in zip(tokens, decisions, strict=True)
     ]
     labels = decode(probabilities, pinned, penalty)
     updated = []
-    for decision, pin, label in zip(decisions, pinned, labels):
+    for decision, pin, label in zip(decisions, pinned, labels, strict=True):
         if pin is None and label != decision.label:
             decision = replace(decision, label=label, rules=decision.rules + ("context",))
         updated.append(decision)

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from functools import cached_property
 
 EXCLUSIVELY_ROMAN_URDU = frozenset(
     """
@@ -24,14 +25,16 @@ EXCLUSIVELY_ROMAN_URDU = frozenset(
 
 
 def read_wordlist(path: str) -> set[str]:
-    """Read a word list, accepting one-word-per-line or whitespace-separated files."""
+    """Read a word list: one word per line, or whitespace/comma separated.
+
+    Everything after ``#`` on a line is a comment, so a header such as
+    ``# seeds + induced from train.csv`` adds no words.
+    """
     words: set[str] = set()
     with open(path, encoding="utf-8") as handle:
         for line in handle:
-            for token in line.replace(",", " ").split():
-                token = token.strip().lower()
-                if token and not token.startswith("#"):
-                    words.add(token)
+            content = line.split("#", 1)[0]
+            words.update(token.lower() for token in content.replace(",", " ").split())
     return words
 
 
@@ -40,9 +43,10 @@ class Lexicons:
     english: frozenset[str]
     roman_urdu: frozenset[str]
 
-    @property
+    @cached_property
     def ambiguous(self) -> frozenset[str]:
-        return frozenset(self.english & self.roman_urdu)
+        """Forms valid in both lexicons (computed once; the lexicons are immutable)."""
+        return self.english & self.roman_urdu
 
 
 def load_lexicons(

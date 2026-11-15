@@ -138,6 +138,33 @@ class CandidateModelTest(unittest.TestCase):
         self.assertTrue(all(record["label"] in {"UR", "EN", "OTH"} for record in records))
         self.assertTrue(all(record["deferred"] == (record["confidence"] < 0.55) for record in records))
 
+    def test_candidate_optimizer_matches_the_default_decay_rule(self):
+        """The ablation arms must differ only in the input: same decay rule as the plain Trainer."""
+        from transformers import Trainer, TrainingArguments
+
+        from src.classifier.train import CANDIDATE_PARAMS, candidate_trainer
+
+        model = self.load()
+        args = TrainingArguments(output_dir=self.tmp.name, learning_rate=3e-5, weight_decay=0.01, report_to=[])
+        plain = Trainer(model=model, args=args)
+        plain.create_optimizer()
+        cand = candidate_trainer(Trainer, cand_lr=1e-3)(model=model, args=args)
+        cand.create_optimizer()
+
+        def by_name(trainer):
+            ids = {id(p): n for n, p in model.named_parameters()}
+            return {ids[id(p)]: (g["lr"], g["weight_decay"]) for g in trainer.optimizer.param_groups for p in g["params"]}
+
+        plain_groups, cand_groups = by_name(plain), by_name(cand)
+        self.assertEqual(plain_groups.keys(), cand_groups.keys())
+        self.assertIs(type(cand.optimizer), type(plain.optimizer))
+        for name, (lr, decay) in cand_groups.items():
+            if name.startswith(CANDIDATE_PARAMS):
+                self.assertEqual((lr, decay), (1e-3, 0.0), name)
+            else:
+                self.assertEqual((lr, decay), plain_groups[name], name)
+        self.assertTrue(any("LayerNorm" in name and cand_groups[name][1] == 0.0 for name in cand_groups))
+
     def test_plain_checkpoints_still_load_in_the_pipeline(self):
         from src.pipeline import LIDPipeline
 

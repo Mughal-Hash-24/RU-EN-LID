@@ -28,7 +28,7 @@ def fit_temperature(logits, labels, steps: int = 200) -> float:
         return loss
 
     optimizer.step(closure)
-    return float(log_t.exp())
+    return float(log_t.detach().exp())
 
 
 def expected_calibration_error(confidences, correct, bins: int = 10) -> float:
@@ -36,7 +36,7 @@ def expected_calibration_error(confidences, correct, bins: int = 10) -> float:
 
     edges = torch.linspace(0, 1, bins + 1)
     error = 0.0
-    for low, high in zip(edges[:-1], edges[1:]):
+    for low, high in zip(edges[:-1], edges[1:], strict=True):
         inside = (confidences > low) & (confidences <= high)
         if inside.any():
             error += float(inside.float().mean() * (confidences[inside].mean() - correct[inside].float().mean()).abs())
@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     for sentence in read_any(args.valid):
         candidates = [expander.expand_token(word) for word in sentence.words]
         logits = predictor.word_logits(sentence.words, candidates)
-        for word_logits, label in zip(logits, sentence.labels):
+        for word_logits, label in zip(logits, sentence.labels, strict=True):
             if word_logits is not None and label != IGNORE_LABEL:
                 all_logits.append(word_logits)
                 all_labels.append(label2id[label])

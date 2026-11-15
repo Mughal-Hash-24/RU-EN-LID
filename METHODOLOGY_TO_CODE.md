@@ -71,7 +71,7 @@ the confident proxy model is reported rather than hidden. README §10.1–§10.3
 | Token accuracy and macro-F1 (overall and per category) | `src/eval/metrics.py` | `accuracy()`, `macro_f1()`, `summarize()` (`IGN` words excluded, counted as `ignored`) |
 | Stage-wise comparison: Stage 2 alone vs with Stage 3 | `scripts/evaluate.py` | `--checkpoint …` with `--tau 0` (no rule can fire) vs the default τ |
 | Error share by cause (ambiguity / spelling / overlap) | `src/eval/metrics.py` | `summarize()` → `error_share_by_cause` |
-| Code-Mixing Index (Gambäck & Das normalization) | `src/eval/metrics.py` | `cmi()` |
+| Code-Mixing Index, Gambäck & Das (2014), per sentence and averaged | `src/eval/metrics.py` | `cmi()`, `mean_sentence_cmi()` |
 | Off-the-shelf baseline adapter (MixLID, 111 labels, no `urd_Latn`) | `src/eval/baselines/mixlid.py` | `MixLIDBaseline.predict_words()` |
 | Evaluation report (markdown) | `scripts/evaluate.py` | `main()`, `markdown_report()` |
 

@@ -49,7 +49,7 @@ def induce(
         raise ValueError("ambiguous_share must be in (0, 0.5]")
     counts: dict[str, Counter] = defaultdict(Counter)
     for sentence in sentences:
-        for word, label in zip(sentence.words, sentence.labels):
+        for word, label in zip(sentence.words, sentence.labels, strict=True):
             if label in LANGUAGES and any(ch.isalpha() for ch in word):
                 counts[word.lower()][label] += 1
 

@@ -45,21 +45,26 @@ def decode(
     """
     if len(probabilities) != len(pinned):
         raise ValueError("one probability dict and one pin per word")
+    if penalty < 0:
+        raise ValueError(f"penalty must be >= 0, got {penalty}")
+    unknown = {pin for pin in pinned if pin is not None} - set(LABELS)
+    if unknown:
+        raise ValueError(f"pinned labels must be in {LABELS}, got {sorted(unknown)}")
     if not probabilities:
         return []
     states = (_START,) + LANGUAGES  # language of the last UR/EN word so far
     best = {state: (0.0 if state == _START else math.inf) for state in states}
     back: list[dict[str, tuple[str, str]]] = []  # per word: new_state -> (old_state, label)
 
-    for probs, pin in zip(probabilities, pinned):
-        options = (pin,) if pin is not None else LABELS
-        step_best = {state: math.inf for state in states}
+    for probs, pin in zip(probabilities, pinned, strict=True):
+        # Emission cost of each allowed label, computed once per word (not once per state).
+        emissions = {pin: 0.0} if pin is not None else {label: _cost(probs, label) for label in LABELS}
+        step_best = dict.fromkeys(states, math.inf)
         step_back: dict[str, tuple[str, str]] = {}
         for old, old_cost in best.items():
             if old_cost == math.inf:
                 continue
-            for label in options:
-                emit = 0.0 if pin is not None else _cost(probs, label)
+            for label, emit in emissions.items():
                 if label == "OTH":
                     new, switch = old, 0.0
                 else:

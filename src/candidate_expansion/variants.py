@@ -61,7 +61,7 @@ def cluster_variants(words, threshold: float = 0.6) -> list[list[str]]:
 
 def canonical_of(cluster: list[str]) -> str:
     """Longest spelling wins; ties resolve alphabetically (baar > bar, hai > he, main = main)."""
-    return sorted(cluster, key=lambda word: (-len(word), word))[0]
+    return min(cluster, key=lambda word: (-len(word), word))
 
 
 def load_dakshina_lexicon(path: str) -> list[tuple[str, str]]:
@@ -78,17 +78,24 @@ def load_dakshina_lexicon(path: str) -> list[tuple[str, str]]:
 
 
 def load_variant_pairs(path: str) -> dict[str, list[str]]:
-    """Read attested variant pairs (``canonical<TAB>variant`` per line)."""
+    """Read attested variant pairs (``canonical<TAB>variant`` per line, ``#`` starts a comment).
+
+    A variant may belong to one canonical only: two canonicals would make its Urdu reading
+    depend on file order, so that is rejected with the offending line number.
+    """
     pairs: dict[str, list[str]] = {}
+    owner: dict[str, str] = {}
     with open(path, encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            parts = line.split()
+        for number, line in enumerate(handle, start=1):
+            parts = line.split("#", 1)[0].lower().split()
             if len(parts) < 2:
                 continue
-            canonical, variant = parts[0].lower(), parts[1].lower()
-            pairs.setdefault(canonical, []).append(variant)
+            canonical, variant = parts[0], parts[1]
+            if owner.setdefault(variant, canonical) != canonical:
+                raise ValueError(
+                    f"{path}:{number}: variant {variant!r} already belongs to {owner[variant]!r}, not {canonical!r}"
+                )
+            if variant not in pairs.setdefault(canonical, []):
+                pairs[canonical].append(variant)
     return pairs
 

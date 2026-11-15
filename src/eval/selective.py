@@ -32,6 +32,7 @@ def collect_rows(pipeline, sentences) -> list[dict]:
         for index, (info, decision) in enumerate(pairs):
             rows.append(
                 {
+                    "sentence_id": sentence.sentence_id,
                     "token": decision.token,
                     "gold": sentence.labels[index],
                     "pred": decision.label,

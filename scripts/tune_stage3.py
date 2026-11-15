@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 
 from src.classifier.dataset import read_any  # noqa: E402
 from src.eval.selective import collect_rows, selective_report  # noqa: E402
-from src.pipeline import DEFAULT_RESOURCES, LIDPipeline  # noqa: E402
+from src.pipeline import DEFAULT_RESOURCES, LIDPipeline, non_negative, probability  # noqa: E402
 
 TAUS = [0.5, 0.55, 0.6, 0.7, 0.8, 0.9, 0.95]
 PENALTIES = [0.0, 0.25, 0.5, 1.0, 2.0, 4.0]
@@ -31,8 +31,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--data", required=True, help="validation CSV (never the test split)")
     parser.add_argument("--checkpoint", help="Stage-2 checkpoint (omit for the heuristic fallback)")
     parser.add_argument("--resources", default=DEFAULT_RESOURCES)
-    parser.add_argument("--taus", type=float, nargs="+", default=TAUS)
-    parser.add_argument("--penalties", type=float, nargs="+", default=PENALTIES)
+    parser.add_argument("--taus", type=probability, nargs="+", default=TAUS)
+    parser.add_argument("--penalties", type=non_negative, nargs="+", default=PENALTIES)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     if "test" in Path(args.data).name.lower():

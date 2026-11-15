@@ -62,7 +62,7 @@ def augment_sentence(
     """Randomly replace Urdu tokens with rule-based spelling variants."""
     generator = rng or random.Random(0)
     new_words: list[str] = []
-    for word, label in zip(words, labels):
+    for word, label in zip(words, labels, strict=True):
         if label == urdu_label:
             options = synthetic_variants(word)
             if options and generator.random() < probability:

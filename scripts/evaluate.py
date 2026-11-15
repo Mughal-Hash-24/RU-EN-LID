@@ -14,15 +14,15 @@ sys.path.insert(0, str(ROOT))
 from src.classifier.dataset import read_any  # noqa: E402
 from src.eval.metrics import summarize  # noqa: E402
 from src.eval.selective import collect_rows, selective_markdown, selective_report  # noqa: E402
-from src.pipeline import DEFAULT_RESOURCES, LIDPipeline  # noqa: E402
+from src.pipeline import DEFAULT_RESOURCES, LIDPipeline, non_negative, probability  # noqa: E402
 from src.verification.rules import DEFAULT_TAU  # noqa: E402
 
 
 def markdown_report(report: dict, data_path: str, selective: dict | None = None) -> str:
     lines = [
-        f"# Evaluation report",
+        "# Evaluation report",
         "",
-        f"Data: `{data_path}` ({report['tokens']} tokens, demo slice)",
+        f"Data: `{data_path}` ({report['tokens']} scored tokens)",
         "",
         "## Overall",
         "",
@@ -30,7 +30,7 @@ def markdown_report(report: dict, data_path: str, selective: dict | None = None)
         "|---|---|",
         f"| Token accuracy | {report['accuracy']:.4f} |",
         f"| Macro F1 | {report['macro_f1']:.4f} |",
-        f"| CMI (gold labels) | {report['cmi']:.2f} |",
+        f"| CMI (gold labels, mean per sentence) | {report['cmi']:.2f} |",
         f"| Errors | {report['errors']} |",
     ]
     if report["ignored"]:
@@ -57,10 +57,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", default="data/demo/seed_labels.csv")
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
-    parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
+    parser.add_argument("--tau", type=probability, default=DEFAULT_TAU)
     parser.add_argument("--resources", default=DEFAULT_RESOURCES, help="Stage-1 lexicon folder")
     parser.add_argument(
-        "--context-penalty", type=float, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
+        "--context-penalty", type=non_negative, default=0.0, help="Stage-3 switch penalty for deferred words (0 = off)"
     )
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--out", help="write the markdown report to this path")

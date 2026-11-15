@@ -15,6 +15,8 @@ from .dataset import IGNORE_LABEL, Sentence, read_any
 from .features import CAND2ID, CAND_MODES, CAND_TAGS, piece_features, word_features
 
 LABELS = ["UR", "EN", "OTH"]
+# Parameters the candidate model adds on top of XLM-R (see candidate_model.py).
+CANDIDATE_PARAMS = ("cand_embeddings", "reading_gate")
 SMOKE_MODEL = "hf-internal-testing/tiny-random-XLMRobertaForTokenClassification"
 DEFAULT_MODEL = "xlm-roberta-base"
 
@@ -31,6 +33,41 @@ def align_labels(word_ids: list[int | None], word_labels: list[str], label2id: d
             labels.append(label2id[word_labels[word_id]])
         previous = word_id
     return labels
+
+
+def candidate_trainer(trainer_base, cand_lr: float):
+    """A Trainer whose optimizer differs from the default in one way only: the new candidate
+    parameters get their own learning rate and no weight decay.
+
+    They start at zero, so at the encoder's usual rate they would barely move. Everything else
+    (which encoder weights are decayed, the optimizer class and its settings) comes from the
+    Trainer itself, so the "none" and candidate arms of the ablation are optimized alike.
+    """
+
+    class CandidateTrainer(trainer_base):
+        def create_optimizer(self):
+            if self.optimizer is None:
+                decay = set(self.get_decay_parameter_names(self.model))
+                groups = {"decay": [], "no_decay": [], "candidate": []}
+                for name, parameter in self.model.named_parameters():
+                    if not parameter.requires_grad:
+                        continue
+                    if name.startswith(CANDIDATE_PARAMS):
+                        groups["candidate"].append(parameter)
+                    else:
+                        groups["decay" if name in decay else "no_decay"].append(parameter)
+                optimizer_cls, optimizer_kwargs = self.get_optimizer_cls_and_kwargs(self.args, self.model)
+                self.optimizer = optimizer_cls(
+                    [
+                        {"params": groups["decay"], "weight_decay": self.args.weight_decay},
+                        {"params": groups["no_decay"], "weight_decay": 0.0},
+                        {"params": groups["candidate"], "weight_decay": 0.0, "lr": cand_lr},
+                    ],
+                    **optimizer_kwargs,
+                )
+            return self.optimizer
+
+    return CandidateTrainer
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -167,15 +204,16 @@ def main(argv: list[str] | None = None) -> int:
                 return row
             word_ids = self.word_ids[index]
             words = max((w for w in word_ids if w is not None), default=-1) + 1
-            hidden = torch.rand(words, generator=self.generator) < self.dropout
+            hidden = (torch.rand(words, generator=self.generator) < self.dropout).tolist()
             unknown = CAND2ID["UNK"]
             row["cand_ids"] = [
-                unknown if w is not None and hidden[w] else tag for w, tag in zip(word_ids, row["cand_ids"])
+                unknown if w is not None and hidden[w] else tag
+                for w, tag in zip(word_ids, row["cand_ids"], strict=True)
             ]
             if use_readings:
                 row["reading_mask"] = [
                     [0] * len(mask) if w is not None and hidden[w] else mask
-                    for w, mask in zip(word_ids, row["reading_mask"])
+                    for w, mask in zip(word_ids, row["reading_mask"], strict=True)
                 ]
             return row
 
@@ -217,28 +255,14 @@ def main(argv: list[str] | None = None) -> int:
         metric_for_best_model="macro_f1" if per_epoch else None,
         report_to=[],
     )
-    optimizers = (None, None)
-    if use_candidates:
-        # The new parameters start at zero; at the encoder's 5e-5 they would barely move.
-        new = [p for n, p in model.named_parameters() if n.startswith(("cand_embeddings", "reading_gate"))]
-        old = [p for n, p in model.named_parameters() if not n.startswith(("cand_embeddings", "reading_gate"))]
-        optimizers = (
-            torch.optim.AdamW(
-                [
-                    {"params": old, "lr": args.learning_rate, "weight_decay": args.weight_decay},
-                    {"params": new, "lr": args.cand_lr, "weight_decay": 0.0},
-                ]
-            ),
-            None,
-        )
-    trainer = Trainer(
+    trainer_class = candidate_trainer(Trainer, args.cand_lr) if use_candidates else Trainer
+    trainer = trainer_class(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         data_collator=collator,
         compute_metrics=compute_metrics,
-        optimizers=optimizers,
     )
     trainer.train()
     final_eval = trainer.evaluate() if eval_dataset is not None else None

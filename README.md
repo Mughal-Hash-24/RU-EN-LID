@@ -201,7 +201,7 @@ Implemented in `src/eval/metrics.py`:
 - token accuracy and macro-F1, overall and **per category** (standard / ambiguous / variant / both);
 - **error share by cause** — what fraction of errors sit on ambiguous tokens, on variant tokens, and on
   their overlap;
-- **CMI** (Gambäck & Das, 2014) with the length normalization `100·(1−Σpₗ²)/(1−1/n)`;
+- **CMI** (Gambäck & Das, 2014) per sentence, `100·(1 − max wᵢ/(n − u))` with OTH and IGN as the language-independent tokens u, averaged over sentences (0–50 for two languages);
 - words labelled `IGN` (no annotator majority) are left out of every score and reported as `ignored`;
 - **stage-wise comparison**: `scripts/evaluate.py --checkpoint … --tau 0` scores Stage 2 alone (no rule can
   fire); the default τ scores Stage 2 + Stage 3;
@@ -246,7 +246,7 @@ From `results/seed_results.md` (12 sentences, 51 tokens; **demo, not a thesis re
 |---|---|
 | Token accuracy | 0.8235 |
 | Macro F1 | 0.7984 |
-| CMI (gold labels, corpus-level) | 38.75 |
+| CMI (gold labels, mean per sentence) | 22.36 |
 | Errors | 9 |
 
 | Category | Tokens | Accuracy | Macro F1 |

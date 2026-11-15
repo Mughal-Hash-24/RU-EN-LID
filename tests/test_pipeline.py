@@ -83,7 +83,7 @@ class MetricsTest(unittest.TestCase):
         self.assertLess(accuracy(["UR", "EN"], ["EN", "EN"]), 1.0)
 
     def test_cmi(self):
-        self.assertAlmostEqual(cmi(["UR", "EN"]), 100.0)
+        self.assertAlmostEqual(cmi(["UR", "EN"]), 50.0)  # Gambäck & Das: two languages peak at 50
         self.assertAlmostEqual(cmi(["UR", "UR", "UR"]), 0.0)
 
     def test_error_attribution(self):

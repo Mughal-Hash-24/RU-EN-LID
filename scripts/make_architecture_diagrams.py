@@ -20,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from src.candidate_expansion.variants import load_variant_pairs  # noqa: E402
 from src.classifier.features import word_features  # noqa: E402
 from src.pipeline import DEFAULT_RESOURCES, LIDPipeline  # noqa: E402
 from src.verification.rules import DEFAULT_TAU  # noqa: E402
@@ -188,8 +189,8 @@ WINDOW = slice(6, 17)  # "box band nhi tha main bht upset hoon is bar bhi"
 
 
 def running_example():
-    rows = [r for r in csv.DictReader(open(ROOT / "data/demo/running_examples.csv", encoding="utf-8"))
-            if r["sentence_id"] == EXAMPLE_ID]
+    with open(ROOT / "data/demo/running_examples.csv", encoding="utf-8", newline="") as handle:
+        rows = [r for r in csv.DictReader(handle) if r["sentence_id"] == EXAMPLE_ID]
     words = [r["token"] for r in rows]
     gold = [r["label"] for r in rows]
     pipeline = LIDPipeline.from_resources(context_penalty=1.0)
@@ -200,9 +201,8 @@ def running_example():
 
 def lexicon_counts():
     expander = LIDPipeline.from_resources().expander
-    pairs = [line for line in open(Path(DEFAULT_RESOURCES) / "variant_pairs.tsv", encoding="utf-8")
-             if line.strip() and not line.startswith("#")]
-    return len(expander.lexicons.english), len(expander.lexicons.roman_urdu), len(pairs)
+    pairs = sum(len(variants) for variants in load_variant_pairs(str(Path(DEFAULT_RESOURCES) / "variant_pairs.tsv")).values())
+    return len(expander.lexicons.english), len(expander.lexicons.roman_urdu), pairs
 
 
 # ---- overview ----------------------------------------------------------------------------------
@@ -401,7 +401,6 @@ def stage1() -> str:
     tx, tw = 470, 680
     s.text(tx, 160, "DECISION · checked top to bottom, first match wins", size=12, weight=700, fill=accent, ls=1.6)
     s.rect(tx, 176, tw, 520, shadow=True, r=14)
-    head_y = 210
     cols = [("attested", tx + 74), ("in English", tx + 166), ("in Urdu", tx + 254), ("tag", tx + 344),
             ("example", tx + 448), ("Urdu reading", tx + 590)]
     s.add(f'<rect x="{tx}" y="176" width="{tw}" height="52" rx="14" fill="{light}"/>')
