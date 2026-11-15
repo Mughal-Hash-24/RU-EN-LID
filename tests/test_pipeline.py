@@ -1,7 +1,13 @@
+import contextlib
+import io
+import math
 import os
 import sys
+import tempfile
 import unittest
 from collections import Counter
+from pathlib import Path
+from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -13,7 +19,17 @@ from src.classifier.dataset import read_any
 from src.classifier.train import align_labels
 from src.eval.metrics import accuracy, cmi, macro_f1, summarize
 from src.pipeline import LIDPipeline
-from src.verification.rules import apply_rules
+from src.verification.rules import DEFAULT_TAU, apply_rules
+from src.verification.tau import (
+    STAGE3_CONFIG,
+    ScoredSentence,
+    SweepPoint,
+    candidate_taus,
+    resolve_tau,
+    save_tuned_tau,
+    select_tau,
+    sweep,
+)
 
 RESOURCES = os.path.join(ROOT, "data", "resources")
 
@@ -74,6 +90,76 @@ class RuleTest(unittest.TestCase):
         decisions = apply_rules([token], [("EN", 0.95)])
         self.assertEqual(decisions[0].label, "EN")
         self.assertEqual(decisions[0].rules, ())
+
+
+class TauSelectionTest(unittest.TestCase):
+    @staticmethod
+    def point(tau, macro_f1, accuracy=0.9):
+        return SweepPoint(tau=tau, tokens=10, accuracy=accuracy, macro_f1=macro_f1, below_tau=0, fired=0, fixed=0,
+                          broke=0)
+
+    def test_picks_the_best_validation_macro_f1(self):
+        points = [self.point(0.0, 0.90), self.point(0.4, 0.93), self.point(0.7, 0.91)]
+        self.assertEqual(select_tau(points).tau, 0.4)
+
+    def test_ties_go_to_accuracy_then_to_the_largest_tau_before_a_drop(self):
+        points = [self.point(0.0, 0.90), self.point(0.6, 0.93, 0.95), self.point(0.3, 0.93, 0.95),
+                  self.point(0.2, 0.93, 0.94), self.point(0.8, 0.92, 0.95)]
+        self.assertEqual(select_tau(points).tau, 0.6)
+
+    def test_keeps_the_last_tau_before_the_score_drops(self):
+        points = [self.point(0.5, 0.93), self.point(0.0, 0.93), self.point(0.9, 0.92)]
+        self.assertEqual(select_tau(points).tau, 0.5)
+        recovers = [self.point(0.0, 0.93), self.point(0.3, 0.92), self.point(0.6, 0.93)]
+        self.assertEqual(select_tau(recovers).tau, 0.0)  # the first drop ends the search
+        with self.assertRaises(ValueError):
+            select_tau(points[:1])  # without tau = 0 there is nothing to compare against
+
+    def test_sweep_finds_the_largest_tau_with_the_best_outcome(self):
+        nhi = TokenCandidates("nhi", "nhi", "variant", False, ("nahi",))
+        he = TokenCandidates("he", "he", "both", True, ("hai",))
+        sentences = [
+            ScoredSentence((nhi,), (("EN", 0.30),), ("UR",)),  # variant-consistency fixes it once tau > 0.30
+            ScoredSentence((he,), (("EN", 0.60),), ("EN",)),  # ... and breaks this English "he" once tau > 0.60
+            ScoredSentence((nhi,), (("UR", 0.95),), ("UR",)),  # no rule applies to a UR "nhi"
+        ]
+        taus = candidate_taus(sentences, grid=None)
+        up = math.inf
+        self.assertEqual(taus, [0.0, 0.30, math.nextafter(0.30, up), 0.60, math.nextafter(0.60, up)])
+        best = select_tau(sweep(sentences, candidate_taus(sentences)))
+        self.assertEqual(best.tau, 0.60)  # the fix is in; one step higher breaks the English "he"
+        self.assertEqual((best.fired, best.fixed, best.broke, best.accuracy), (1, 1, 0, 1.0))
+        harmful = sentences[1:]  # only the firing that breaks a label: tau stops just below it
+        chosen = select_tau(sweep(harmful, candidate_taus(harmful)))
+        self.assertEqual((chosen.tau, chosen.fired), (0.60, 0))
+
+
+class TauPrecedenceTest(unittest.TestCase):
+    def test_explicit_beats_tuned_beats_default(self):
+        with tempfile.TemporaryDirectory() as folder:
+            self.assertEqual(resolve_tau(None, None), (DEFAULT_TAU, "default"))
+            self.assertEqual(resolve_tau(None, folder), (DEFAULT_TAU, "default"))  # not tuned yet
+            save_tuned_tau(Path(folder) / STAGE3_CONFIG, {"tau": 0.0})
+            self.assertEqual(resolve_tau(None, folder)[0], 0.0)
+            self.assertEqual(resolve_tau(0.7, folder), (0.7, "explicit"))
+            self.assertEqual(resolve_tau(0.0, None), (0.0, "explicit"))
+
+    def test_tuned_value_of_retrained_weights_is_ignored(self):
+        with tempfile.TemporaryDirectory() as folder:
+            config, weights = Path(folder) / STAGE3_CONFIG, Path(folder) / "model.safetensors"
+            save_tuned_tau(config, {"tau": 0.0})
+            weights.write_bytes(b"")
+            os.utime(config, (1_000_000, 1_000_000))
+            os.utime(weights, (2_000_000, 2_000_000))
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(resolve_tau(None, folder)[0], DEFAULT_TAU)
+
+    def test_pipeline_uses_the_tuned_value_unless_tau_is_given(self):
+        with tempfile.TemporaryDirectory() as folder, mock.patch("src.classifier.predict.TokenLIDPredictor"):
+            save_tuned_tau(Path(folder) / STAGE3_CONFIG, {"tau": 0.0})
+            self.assertEqual(LIDPipeline.from_resources(RESOURCES, checkpoint=folder).tau, 0.0)
+            self.assertEqual(LIDPipeline.from_resources(RESOURCES, checkpoint=folder, tau=0.8).tau, 0.8)
+        self.assertEqual(LIDPipeline.from_resources(RESOURCES).tau, DEFAULT_TAU)  # fallback mode
 
 
 class MetricsTest(unittest.TestCase):

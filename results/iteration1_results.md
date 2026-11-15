@@ -238,6 +238,12 @@ Why so little happens:
 The previous results used Stage 3 too, but it changed nothing there either: the fallback's guesses never
 triggered a rule. So with neither the fallback nor the trained model has Stage 3 contributed yet.
 
+**Update (2026-11-09):** τ is now selected on the validation split by `scripts/tune_tau.py` instead of being
+fixed at 0.55. No threshold beats Stage 2 alone, so it first selected τ = 0 (Stage 3 off). **Update
+(2026-11-10):** among the τ values that tie, it now keeps the largest one before the validation score first
+drops: τ ≈ 0.568, where the rules re-check 62 validation words and change none (on test: 91 re-checked, one
+changed, wrongly; 0.9617 as at 0.55). See [`stage3_tau/summary.md`](stage3_tau/summary.md).
+
 ### 3.6 Ambiguous and "both" words, one by one (COMI test, Stage 2 + 3)
 
 | Word | Correct | Gold UR / EN |

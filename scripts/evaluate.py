@@ -54,7 +54,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", default="data/demo/seed_labels.csv")
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
-    parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
+    parser.add_argument(
+        "--tau",
+        type=float,
+        help=f"Stage 3 threshold (default: the value tuned for a local --checkpoint by scripts/tune_tau.py, "
+        f"else {DEFAULT_TAU}; --tau 0 = Stage 2 alone)",
+    )
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--out", help="write the markdown report to this path")
     args = parser.parse_args(argv)
@@ -65,6 +70,7 @@ def main(argv: list[str] | None = None) -> int:
     display_path = os.path.relpath(data_path, ROOT) if data_path.is_relative_to(ROOT) else str(data_path)
     sentences = read_any(str(data_path))
     pipeline = LIDPipeline.from_resources(checkpoint=args.checkpoint, tau=args.tau)
+    print(f"[stage3] tau = {pipeline.tau} ({pipeline.tau_source})", file=sys.stderr)
 
     rows = []
     for sentence in sentences:

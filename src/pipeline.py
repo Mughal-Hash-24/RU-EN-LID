@@ -5,9 +5,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 
 from .candidate_expansion.expander import CandidateExpander, TokenCandidates
 from .verification.rules import DEFAULT_TAU, apply_rules
+from .verification.tau import resolve_tau
 
 DEFAULT_RESOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "resources")
 
@@ -30,25 +32,30 @@ def heuristic_predictions(tokens: list[TokenCandidates]) -> list[tuple[str, floa
 
 
 class LIDPipeline:
-    def __init__(self, expander: CandidateExpander, predictor=None, tau: float = DEFAULT_TAU) -> None:
+    def __init__(
+        self, expander: CandidateExpander, predictor=None, tau: float = DEFAULT_TAU, tau_source: str = "explicit"
+    ) -> None:
         self.expander = expander
         self.predictor = predictor
         self.tau = tau
+        self.tau_source = tau_source
 
     @classmethod
     def from_resources(
         cls,
         resources_dir: str = DEFAULT_RESOURCES,
         checkpoint: str | None = None,
-        tau: float = DEFAULT_TAU,
+        tau: float | None = None,
     ) -> "LIDPipeline":
+        """tau=None: the value tuned for a local checkpoint (scripts/tune_tau.py), else DEFAULT_TAU."""
+        tau, source = resolve_tau(tau, checkpoint)
         expander = CandidateExpander.from_resources(resources_dir)
         predictor = None
         if checkpoint:
             from .classifier.predict import TokenLIDPredictor
 
             predictor = TokenLIDPredictor(checkpoint)
-        return cls(expander, predictor, tau)
+        return cls(expander, predictor, tau, source)
 
     def run(self, text: str):
         tokens = self.expander.expand(text)
@@ -98,11 +105,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--text", required=True)
     parser.add_argument("--checkpoint", help="trained token-classification checkpoint (optional)")
     parser.add_argument("--resources", default=DEFAULT_RESOURCES)
-    parser.add_argument("--tau", type=float, default=DEFAULT_TAU)
+    parser.add_argument(
+        "--tau",
+        type=float,
+        help=f"Stage 3 threshold (default: the value tuned for a local --checkpoint, else {DEFAULT_TAU})",
+    )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
 
     pipeline = LIDPipeline.from_resources(args.resources, checkpoint=args.checkpoint, tau=args.tau)
+    print(f"[stage3] tau = {pipeline.tau} ({pipeline.tau_source})", file=sys.stderr)
     records = pipeline.run_records(args.text)
     if args.json:
         print(json.dumps(records, indent=2, ensure_ascii=False))
