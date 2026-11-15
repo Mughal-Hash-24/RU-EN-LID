@@ -154,6 +154,9 @@ class TauPrecedenceTest(unittest.TestCase):
             os.utime(weights, (2_000_000, 2_000_000))
             with contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(resolve_tau(None, folder)[0], DEFAULT_TAU)
+            # The same files downloaded with `hf download --local-dir`: the times are only the download order.
+            os.makedirs(Path(folder) / ".cache" / "huggingface")
+            self.assertEqual(resolve_tau(None, folder)[0], 0.0)
 
     def test_hub_id_reads_the_tuned_value_from_the_hub(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -193,7 +196,28 @@ class ResourcePrecedenceTest(unittest.TestCase):
             os.mkdir(saved)
             self.assertEqual(resolve_resources(folder), (saved, "saved with the checkpoint"))
             self.assertEqual(resolve_resources(folder, RESOURCES), (RESOURCES, "explicit"))
-            self.assertEqual(resolve_resources("someone/some-model"), (DEFAULT_RESOURCES, "default"))  # hub id
+
+    def test_hub_id_reads_the_lexicons_saved_in_its_repository(self):
+        with tempfile.TemporaryDirectory() as snapshot:
+            saved = os.path.join(snapshot, CHECKPOINT_RESOURCES)
+            hub = types.ModuleType("huggingface_hub")
+            hub.hf_hub_download = mock.Mock(side_effect=lambda repo, name: os.path.join(snapshot, name))
+            with mock.patch.dict(sys.modules, {"huggingface_hub": hub}):
+                folder, source = resolve_resources("someone/some-model")
+            self.assertEqual(os.path.normpath(folder), os.path.normpath(saved))
+            self.assertIn("Hugging Face", source)
+            self.assertEqual(
+                [call.args for call in hub.hf_hub_download.call_args_list],
+                [("someone/some-model", f"{CHECKPOINT_RESOURCES}/{name}") for name in RESOURCE_FILES],
+            )
+
+    def test_hub_id_without_saved_lexicons_uses_the_seeds(self):
+        hub = types.ModuleType("huggingface_hub")
+        hub.hf_hub_download = mock.Mock(side_effect=OSError("404: no stage1_resources in this repository"))
+        with mock.patch.dict(sys.modules, {"huggingface_hub": hub}):  # e.g. the iteration-1 model
+            self.assertEqual(resolve_resources("someone/some-model"), (DEFAULT_RESOURCES, "default"))
+        with mock.patch.dict(sys.modules, {"huggingface_hub": None}):  # huggingface_hub not installed
+            self.assertEqual(resolve_resources("someone/some-model"), (DEFAULT_RESOURCES, "default"))
 
     def test_pipeline_reads_the_lexicons_saved_with_the_checkpoint(self):
         with tempfile.TemporaryDirectory() as folder, mock.patch("src.classifier.predict.TokenLIDPredictor"):

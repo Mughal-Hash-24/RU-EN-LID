@@ -216,7 +216,13 @@ def load_tuned_tau(path: Path) -> float:
 
 
 def is_stale(path: Path) -> bool:
-    """True when the checkpoint's weights were written after its tuned τ (the model was retrained)."""
+    """True when the checkpoint's weights were written after its tuned τ (the model was retrained).
+
+    A folder downloaded with ``hf download --local-dir`` (it holds ``.cache/huggingface/``) is never stale: its
+    files come from one repository revision, and their times only say in which order they were downloaded.
+    """
+    if (path.parent / ".cache" / "huggingface").is_dir():
+        return False
     saved = path.stat().st_mtime
     return any(
         (path.parent / name).is_file() and (path.parent / name).stat().st_mtime > saved for name in WEIGHT_FILES

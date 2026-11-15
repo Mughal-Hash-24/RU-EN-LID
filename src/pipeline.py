@@ -18,12 +18,32 @@ CHECKPOINT_RESOURCES = "stage1_resources"
 RESOURCE_FILES = ("english_seed.txt", "roman_urdu_seed.txt", "variant_pairs.tsv")
 
 
+def hub_resources(model_id: str) -> str | None:
+    """The lexicons saved with a Hugging Face model id (``stage1_resources/``), downloaded into the Hugging Face
+    cache; None when huggingface_hub is missing, the repository has no such folder, or the id isn't on the hub."""
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError:
+        return None
+    try:
+        paths = [hf_hub_download(model_id, f"{CHECKPOINT_RESOURCES}/{name}") for name in RESOURCE_FILES]
+    except Exception:  # noqa: BLE001 (missing files, unknown or invalid id, offline: all mean "none saved")
+        return None
+    return os.path.dirname(paths[0])
+
+
 def resolve_resources(checkpoint: str | None, resources_dir: str | None = None) -> tuple[str, str]:
-    """Stage-1 lexicon folder for a run, and where it came from: explicit > saved with the checkpoint > seeds."""
+    """Stage-1 lexicon folder for a run, and where it came from: explicit > saved with the checkpoint (a local
+    folder or a Hugging Face model id) > seeds."""
     if resources_dir:
         return resources_dir, "explicit"
-    if checkpoint and os.path.isdir(os.path.join(checkpoint, CHECKPOINT_RESOURCES)):
-        return os.path.join(checkpoint, CHECKPOINT_RESOURCES), "saved with the checkpoint"
+    if checkpoint and os.path.isdir(checkpoint):
+        saved = os.path.join(checkpoint, CHECKPOINT_RESOURCES)
+        return (saved, "saved with the checkpoint") if os.path.isdir(saved) else (DEFAULT_RESOURCES, "default")
+    if checkpoint:
+        hub = hub_resources(checkpoint)
+        if hub is not None:
+            return hub, f"saved with {checkpoint} on the Hugging Face Hub"
     return DEFAULT_RESOURCES, "default"
 
 

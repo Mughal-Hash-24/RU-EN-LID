@@ -79,7 +79,7 @@ ruen-lid-pipeline/
 │   ├── make_architecture_diagrams.py # docs/architecture/*.svg from the pipeline
 │   └── train_poc.py           # Stage-2 entry point (dry-run / smoke / real)
 ├── experiments/               # side experiments (Devanagari sentences, longer training, Stage 1 → Stage 2 ablation)
-├── tests/                     # 63 unit tests (stdlib unittest; the 6 model tests need torch)
+├── tests/                     # 65 unit tests (stdlib unittest; the 6 model tests need torch)
 ├── results/
 │   ├── seed_results.md        # demo-slice evaluation in fallback mode (before Stage 2 was trained)
 │   ├── iteration1_results.md  # trained Stage 2 vs fallback, learning curve, Stage 3 effect
@@ -112,7 +112,10 @@ python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, ma
 # The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
 python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# Unit tests (63 tests; 57 run without torch)
+# The iteration-2 model, which also reads Stage 1's tag for each word (§10.4; ~1.1 GB)
+python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter2-tag --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
+
+# Unit tests (65 tests; 59 run without torch)
 python3 -m unittest discover -s tests
 
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
@@ -228,7 +231,8 @@ Implemented in `src/eval/metrics.py`:
   selected τ never scores below Stage 2 alone on validation. A fine grid around the selected τ (steps of
   0.0001, `zoom.csv`) is scored as a check. The value is saved as `<checkpoint>/stage3.json` and used when no `--tau` is given
   (precedence: `--tau` > tuned value > `DEFAULT_TAU` = 0.55, which the fallback mode keeps; a local
-  `stage3.json` older than the model weights is ignored). For a Hugging Face model id the pipeline reads the
+  `stage3.json` older than the model weights is ignored, unless the folder was downloaded with
+  `hf download --local-dir`). For a Hugging Face model id the pipeline reads the
   `stage3.json` in its repository (needs `huggingface_hub`, installed with `transformers`); the released
   iteration-1 model has one. After retraining, upload a new `stage3.json` together with the new weights. The test split and the demo sets are scored only for reporting;
 - categories: the demo slice carries gold categories; COMI-LINGUA has none, so its per-category report uses
@@ -443,7 +447,7 @@ a working core implementation, mapped to the methodology and documented, is.
 Contributed by Shehreyar Rashid (merge `cd8fd91`); trained and measured on the COMI-LINGUA proxy splits in
 [`experiments/03_stage1_to_stage2`](experiments/03_stage1_to_stage2/) (proxy results, like §9).
 
-- **Stage 1 → Stage 2.** `train.py --candidates tag|tag+reading` adds each word's Stage-1 evidence tag (EN, UR, AMB, VAR, BOTH, UNK) and its Urdu canonical reading to the XLM-R input embedding. The new parameters start at zero, so the ablation against the plain model changes nothing else. The checkpoint keeps a copy of the lexicons it was trained with (`stage1_resources/`), and every tool reuses it unless `--resources` is given.
+- **Stage 1 → Stage 2.** `train.py --candidates tag|tag+reading` adds each word's Stage-1 evidence tag (EN, UR, AMB, VAR, BOTH, UNK) and its Urdu canonical reading to the XLM-R input embedding. The new parameters start at zero, so the ablation against the plain model changes nothing else. The checkpoint keeps a copy of the lexicons it was trained with (`stage1_resources/`), and every tool reuses it unless `--resources` is given, also when `--checkpoint` is a Hugging Face model id.
 - **Lexicon coverage.** `scripts/build_lexicon.py` grows the seeds from the training split's labels and writes a new resource folder (EN, UR, and an observed AMB set). Built from the training split only, it covers 75.6% of the validation words (the seeds: 34.1%).
 - **Stage 3 context.** With `--context-penalty λ > 0`, deferred ambiguous and unknown words are re-decoded with a cost λ per UR↔EN switch; accepted and rule-fixed words never change. λ = 0 is iteration-1 behaviour. Variants are not re-decoded: on the running example that turned *he* (= *hai*) after "same issue" into English.
 - **Evaluation.** `scripts/evaluate.py` now also reports coverage, accuracy on accepted vs deferred words, and Stage-3 fixes and breaks per rule and per Stage-1 category.
@@ -460,7 +464,7 @@ Contributed by Shehreyar Rashid (merge `cd8fd91`); trained and measured on the C
   The gain is on words the lexicon places in one language, i.e. lexicon coverage; on the ambiguous words the
   tag doesn't help. The reading adds nothing yet: its learned gate stays near 0, because only the 9 attested
   pairs in `variant_pairs.tsv` give a reading.
-- The kept model (`tag`, seed 1, chosen on validation; local `checkpoints/ruen-lid-tag`, not released):
+- The kept model (`tag`, seed 1, chosen on validation), released as [`OmarNiazi/ruen-lid-xlmr-base-iter2-tag`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter2-tag):
   calibrated (T = 1.42, ECE 0.019 → 0.005), τ = 0.562 tuned on validation → test **0.9651 / 0.9405**, running
   examples 25/25, demo 51/51.
 - **The context decoder doesn't transfer.** Its best validation setting (τ = 0.7, λ = 0.5: +7 words on

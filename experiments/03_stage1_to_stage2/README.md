@@ -101,7 +101,7 @@ puts in both lists are names (*abhishek, amitabh, delhi*), because COMI-LINGUA l
 ## The kept model
 
 `tag`, seed 1: the best version by mean validation macro-F1 and, within it, the best seed (validation macro-F1
-0.9463). It is kept locally as `checkpoints/ruen-lid-tag` (git-ignored, not released). Everything below was chosen
+0.9463). It is released as [`OmarNiazi/ruen-lid-xlmr-base-iter2-tag`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter2-tag) (local copy: the git-ignored `checkpoints/ruen-lid-tag`). Everything below was chosen
 on validation; the test split was scored once per setting, for reporting. Files in `results/kept_model/`.
 
 1. **Calibration** (`python -m src.classifier.calibrate`): temperature T = 1.42, fitted on validation. Expected
