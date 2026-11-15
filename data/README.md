@@ -39,3 +39,10 @@ COMI-LINGUA stores `LID_train.csv` with Git LFS (~123 MB) but `LID_test.csv` as 
 
 Result: 6,540 train / 727 validation / 750 test sentences. `--subsets 1000,2000,5000` adds nested random
 training subsets for the learning curve.
+
+**Induced Stage-1 lexicon.** `scripts/build_lexicon.py --train data/cache/comi-lingua-lid/roman/train.csv
+--out data/resources_induced` adds to the seed lists every word whose training labels are mostly one language
+(at least 3 occurrences, at least 90% UR or EN), and puts words with at least 20% of each in both lists. It
+reads the training split only. The folder is git-ignored: it is derived from COMI-LINGUA's labels (CC BY-SA
+4.0) and rebuilt by that one command. A model trained with `--candidates` keeps a copy in its checkpoint
+(`stage1_resources/`).

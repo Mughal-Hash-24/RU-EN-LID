@@ -30,7 +30,7 @@ their overlap).
 | Stage | Proposal step | Status in this repository |
 |---|---|---|
 | 1 | Candidate expansion (surface form kept, readings attached, never rewritten) | **Working** — lexicons, attested variant pairs, four-category taxonomy, per-token candidate sets |
-| 2 | Context-aware classifier (fine-tuned multilingual encoder) | **Trained (proxy data)** — XLM-R base fine-tuned on 6,540 Latin-script COMI-LINGUA sentences (hi → UR), per-epoch validation, inference wrapper; augmentation implemented, not yet used; Stage 1 candidate conditioning is the iteration-2 ablation rung (§10.1) |
+| 2 | Context-aware classifier (fine-tuned multilingual encoder) | **Trained (proxy data)** — XLM-R base fine-tuned on 6,540 Latin-script COMI-LINGUA sentences (hi → UR), per-epoch validation, inference wrapper; augmentation implemented, not yet used; **+ Stage 1 conditioning** (evidence tag and Urdu reading in the input embedding, `--candidates`) trained and compared with the plain encoder in `experiments/03_stage1_to_stage2` (§10.4) |
 | 3 | Rule-based verification (priors, confidence gating, consistency) | **Working** — conservative rules with per-token action log; threshold τ selected on validation data (`scripts/tune_tau.py`, §8) |
 | 4 | Evaluation (per-category metrics, error attribution, CMI) | **Working** — metrics module + report script + learning-curve runner + MixLID baseline adapter |
 
@@ -78,8 +78,8 @@ ruen-lid-pipeline/
 │   ├── build_lexicon.py       # Stage-1 resource folder: seeds + words induced from the training split
 │   ├── make_architecture_diagrams.py # docs/architecture/*.svg from the pipeline
 │   └── train_poc.py           # Stage-2 entry point (dry-run / smoke / real)
-├── experiments/               # side experiments on the iteration-1 setup (Devanagari sentences, longer training)
-├── tests/                     # 61 unit tests (stdlib unittest; the 6 model tests need torch)
+├── experiments/               # side experiments (Devanagari sentences, longer training, Stage 1 → Stage 2 ablation)
+├── tests/                     # 63 unit tests (stdlib unittest; the 6 model tests need torch)
 ├── results/
 │   ├── seed_results.md        # demo-slice evaluation in fallback mode (before Stage 2 was trained)
 │   ├── iteration1_results.md  # trained Stage 2 vs fallback, learning curve, Stage 3 effect
@@ -112,7 +112,7 @@ python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, ma
 # The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
 python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# Unit tests (61 tests; 55 run without torch)
+# Unit tests (63 tests; 57 run without torch)
 python3 -m unittest discover -s tests
 
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
@@ -289,6 +289,10 @@ automatically; the table above is at τ = 0.55.
   18,538 training sentences that contain Hindi script (25,078 in total), with the Hindi-script words labelled
   `OTH` or left as `IGN` context, gives no gain (0.9618 ± 0.0026 and 0.9624 ± 0.0005 vs 0.9626 ± 0.0009), and
   the `OTH` version lowers English recall (0.938 vs 0.948). The Roman-only training data stays.
+- *Stage 1 feeds Stage 2* ([`03_stage1_to_stage2`](experiments/03_stage1_to_stage2/), §10.4): adding each
+  word's Stage-1 tag to the encoder input raises test accuracy from 0.9633 ± 0.0004 to 0.9643 ± 0.0010, better
+  in all 3 seeds but by only about 15 words, and almost all of it on words the lexicon puts in one language,
+  not on the ambiguous ones. Adding the Urdu reading as well gives the same (0.9642 ± 0.0006).
 
 The 25-token running-example slice is committed as `data/demo/running_examples.csv`; reproduce that row
 with `python3 scripts/evaluate.py --data data/demo/running_examples.csv --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1`.
@@ -386,6 +390,11 @@ Iteration 2 adds the candidate-conditioned encoder and reports the plain-encoder
 rung on identical splits, with the augmentation from `src/classifier/augment.py` in training. The handoff
 point is already explicit in the code, so this is an additive change rather than a redesign.
 
+**Update (iteration 2).** The candidate-conditioned encoder now exists and has been compared with the plain one
+on identical splits and seeds (§10.4, `experiments/03_stage1_to_stage2`). The result bears out point 1: with
+a lexicon induced from the training labels, the gain is small (+0.10 points) and comes from lexicon coverage,
+not from the ambiguous words. The augmentation is still not used in training.
+
 ### 10.2 Why Stage 3 is conservative and currently changes almost nothing
 
 Proposal §7.3 requires Stage 3 to be deliberately conservative so that verification cannot become a new
@@ -431,30 +440,51 @@ a working core implementation, mapped to the methodology and documented, is.
 
 ### 10.4 Iteration 2 (in progress): Stage 1 feeds Stage 2, Stage 3 uses context
 
-Implemented and unit-tested; **not yet trained or evaluated on COMI-LINGUA**, so no results are claimed.
+Contributed by Shehreyar Rashid (merge `cd8fd91`); trained and measured on the COMI-LINGUA proxy splits in
+[`experiments/03_stage1_to_stage2`](experiments/03_stage1_to_stage2/) (proxy results, like §9).
 
-- **Stage 1 → Stage 2.** `train.py --candidates tag|tag+reading` adds each word's Stage-1 evidence tag (EN, UR, AMB, VAR, BOTH, UNK) and its Urdu canonical reading to the XLM-R input embedding. The new parameters start at zero, so the ablation against the plain model changes nothing else.
-- **Lexicon coverage.** `scripts/build_lexicon.py` grows the seeds from the training split's labels and writes a new resource folder (EN, UR, and an observed AMB set); pass it to any tool with `--resources`. Build it from training data only.
+- **Stage 1 → Stage 2.** `train.py --candidates tag|tag+reading` adds each word's Stage-1 evidence tag (EN, UR, AMB, VAR, BOTH, UNK) and its Urdu canonical reading to the XLM-R input embedding. The new parameters start at zero, so the ablation against the plain model changes nothing else. The checkpoint keeps a copy of the lexicons it was trained with (`stage1_resources/`), and every tool reuses it unless `--resources` is given.
+- **Lexicon coverage.** `scripts/build_lexicon.py` grows the seeds from the training split's labels and writes a new resource folder (EN, UR, and an observed AMB set). Built from the training split only, it covers 75.6% of the validation words (the seeds: 34.1%).
 - **Stage 3 context.** With `--context-penalty λ > 0`, deferred ambiguous and unknown words are re-decoded with a cost λ per UR↔EN switch; accepted and rule-fixed words never change. λ = 0 is iteration-1 behaviour. Variants are not re-decoded: on the running example that turned *he* (= *hai*) after "same issue" into English.
 - **Evaluation.** `scripts/evaluate.py` now also reports coverage, accuracy on accepted vs deferred words, and Stage-3 fixes and breaks per rule and per Stage-1 category.
+
+**Results** (test, Stage 2 alone, mean ± s.d. of 3 seeds, the iteration-1 settings for every version):
+
+| Version | Test accuracy | Test macro-F1 | Ambiguous words (687) | Words in one list (10,670) | Words in no list (3,671) |
+|---|---|---|---|---|---|
+| plain encoder (`none`) | 0.9633 ± 0.0004 | 0.9376 ± 0.0008 | 0.8894 | 0.9805 | 0.9258 |
+| + Stage-1 tag (`tag`) | 0.9643 ± 0.0010 | 0.9394 ± 0.0013 | 0.8860 | 0.9820 | 0.9266 |
+| + tag and reading (`tag+reading`) | 0.9642 ± 0.0006 | 0.9392 ± 0.0007 | 0.8884 | 0.9820 | 0.9256 |
+
+- Rung 2 − rung 1 is **+0.0010** (better in all 3 seeds; about 15 words; not statistically clear with 3 seeds).
+  The gain is on words the lexicon places in one language, i.e. lexicon coverage; on the ambiguous words the
+  tag doesn't help. The reading adds nothing yet: its learned gate stays near 0, because only the 9 attested
+  pairs in `variant_pairs.tsv` give a reading.
+- The kept model (`tag`, seed 1, chosen on validation; local `checkpoints/ruen-lid-tag`, not released):
+  calibrated (T = 1.42, ECE 0.019 → 0.005), τ = 0.562 tuned on validation → test **0.9651 / 0.9405**, running
+  examples 25/25, demo 51/51.
+- **The context decoder doesn't transfer.** Its best validation setting (τ = 0.7, λ = 0.5: +7 words on
+  validation) loses 23 words on test (9 fixed, 32 broken), so it stays off.
+- Caveat: the induced tags come from the same training labels the model learns from, so on training sentences
+  a tag is nearly the label (15% of tags are hidden while training). Fold-wise induction is the next step
+  (§13).
 
 ```bash
 D=data/cache/comi-lingua-lid/roman
 python3 scripts/build_lexicon.py --train $D/train.csv --out data/resources_induced --check $D/valid.csv
-# same hyperparameters as the iteration-1 run, so only --candidates differs
+# all three versions x seeds 1-3, scored with experiments/score.py (about 95 minutes on an RTX 4070 laptop GPU)
+python3 experiments/03_stage1_to_stage2/run.py
+# or one model: the iteration-1 hyperparameters, so only --candidates differs
 python3 -m src.classifier.train --train $D/train.csv --valid $D/valid.csv \
   --model xlm-roberta-base --epochs 5 --batch-size 16 --learning-rate 3e-5 \
   --warmup-ratio 0.1 --weight-decay 0.01 --max-length 256 --bf16 --select-best \
   --candidates tag --resources data/resources_induced --out checkpoints/run-tag
-python3 -m src.classifier.calibrate --checkpoint checkpoints/run-tag --valid $D/valid.csv \
-  --resources data/resources_induced
-python3 scripts/tune_stage3.py --data $D/valid.csv --checkpoint checkpoints/run-tag \
-  --resources data/resources_induced
-python3 scripts/evaluate.py --data $D/test.csv --checkpoint checkpoints/run-tag \
-  --resources data/resources_induced --tau <best> --context-penalty <best>
+# the checkpoint now carries its lexicons, so the tools below need no --resources
+python3 -m src.classifier.calibrate --checkpoint checkpoints/run-tag --valid $D/valid.csv
+python3 scripts/tune_tau.py --checkpoint checkpoints/run-tag --test $D/test.csv --out-dir <folder>
+python3 scripts/tune_stage3.py --data $D/valid.csv --checkpoint checkpoints/run-tag
+python3 scripts/evaluate.py --data $D/test.csv --checkpoint checkpoints/run-tag
 ```
-
-Compare against the iteration-1 model on the same test split (`--candidates none`, same seeds), and report the ambiguous and unknown rows of the Stage-1 category table, not only overall accuracy.
 
 ## 11. Datasets
 
@@ -476,8 +506,10 @@ The required step-by-step mapping table lives in [`METHODOLOGY_TO_CODE.md`](METH
    found in COMI-LINGUA (*me, or, bat, use, hi*).
 4. Train the XLM-R classifier on the annotated RU–EN data (P3); proxy-data training is done (§7, §9). For
    any further proxy runs, drop train/valid sentences that near-copy a test sentence (§7).
-5. Feed Stage 1's candidate readings into the classifier and use the augmentation in training, so the
-   ablation ladder can separate the stages; revisit Stage 3 for a confident classifier.
+5. Stage 1 → Stage 2 is in (§10.4). Next: mined variant pairs so the reading channel has something to carry;
+   tags for the training split induced fold by fold, so they are as noisy as at test time; the augmentation
+   in training; then repeat the rung-2 comparison on annotated RU–EN data. Revisit Stage 3 for a confident
+   classifier.
 6. Run baselines (off-the-shelf tools, MixLID, LLMs) and the ablation ladder (P5–P6).
 7. Error-share-by-cause and CMI-band analysis (per-sentence CMI); report per-category results (P6).
 
