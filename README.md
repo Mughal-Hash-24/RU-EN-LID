@@ -31,7 +31,7 @@ their overlap).
 |---|---|---|
 | 1 | Candidate expansion (surface form kept, readings attached, never rewritten) | **Working** — lexicons, attested variant pairs, four-category taxonomy, per-token candidate sets |
 | 2 | Context-aware classifier (fine-tuned multilingual encoder) | **Trained (proxy data)** — XLM-R base fine-tuned on 6,540 Latin-script COMI-LINGUA sentences (hi → UR), per-epoch validation, inference wrapper; augmentation implemented, not yet used; Stage 1 candidate conditioning is the iteration-2 ablation rung (§10.1) |
-| 3 | Rule-based verification (priors, confidence gating, consistency) | **Working** — conservative rules with per-token action log |
+| 3 | Rule-based verification (priors, confidence gating, consistency) | **Working** — conservative rules with per-token action log; threshold τ selected on validation data (`scripts/tune_tau.py`, §8) |
 | 4 | Evaluation (per-category metrics, error attribution, CMI) | **Working** — metrics module + report script + learning-curve runner + MixLID baseline adapter |
 
 Stages 1, 3 and the evaluation harness run on the **Python standard library alone** — no GPU, no
@@ -69,19 +69,24 @@ ruen-lid-pipeline/
 ├── src/
 │   ├── candidate_expansion/   # Stage 1
 │   ├── classifier/            # Stage 2 (dataset, augment, train, predict)
-│   ├── verification/          # Stage 3
-│   ├── eval/                  # metrics + baseline adapters
+│   ├── verification/          # Stage 3 (rules + threshold selection)
+│   ├── eval/                  # metrics, calibration, baseline adapters
 │   └── pipeline.py            # end-to-end CLI
 ├── scripts/
 │   ├── evaluate.py            # token-level evaluation + markdown report
 │   ├── prepare_comi_lingua.py # Stage-2 proxy data: COMI-LINGUA Latin-script splits
+│   ├── check_split_overlap.py # checks that train / valid / test share no sentences
 │   ├── learning_curve.py      # Stage-2 learning curve (subset sizes × seeds) + scoring
+│   ├── tune_tau.py            # Stage-3 threshold τ selected on validation -> <checkpoint>/stage3.json
 │   └── train_poc.py           # Stage-2 entry point (dry-run / smoke / real)
-├── tests/test_pipeline.py     # 15 unit tests (stdlib unittest)
+├── experiments/               # side experiments on the iteration-1 setup (Devanagari sentences, longer training)
+├── tests/test_pipeline.py     # 22 unit tests (stdlib unittest)
 ├── results/
 │   ├── seed_results.md        # demo-slice evaluation in fallback mode (before Stage 2 was trained)
 │   ├── iteration1_results.md  # trained Stage 2 vs fallback, learning curve, Stage 3 effect
-│   └── learning_curve/        # learning-curve summary.md + runs.json
+│   ├── learning_curve/        # learning-curve summary.md + runs.json
+│   ├── split_overlap.json     # overlap counts between the proxy splits
+│   └── stage3_tau/            # τ selection: summary.md + sweep.json + sweep.csv + zoom.csv
 └── checkpoints/               # trained models (git-ignored)
 ```
 
@@ -108,7 +113,7 @@ python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, ma
 # The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
 python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# Unit tests (15 tests)
+# Unit tests (22 tests)
 python3 -m unittest discover -s tests
 
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
@@ -182,7 +187,9 @@ python3 -m src.pipeline --text "kal office jana hai" --checkpoint OmarNiazi/ruen
 Face: [`OmarNiazi/ruen-lid-xlmr-base-iter1`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter1).
 It's licensed CC BY-SA 4.0, following the COMI-LINGUA training data, and its model card has the results and
 the proxy-data caveat. `--checkpoint` accepts that id (downloaded once, ~1.1 GB) or a local folder such as
-`checkpoints/ruen-lid`, which is where step 3b writes it.
+`checkpoints/ruen-lid`, which is where step 3b writes it. A local folder can also carry the Stage-3
+threshold tuned for it (`stage3.json`, §8); the Hugging Face id has none, so it uses the default τ unless
+`--tau` is given (the tuned value for this model is `--tau 0.5684722065925598`, i.e. ≈ 0.568).
 
 **Proxy splits** (`scripts/prepare_comi_lingua.py`):
 - the gold label is the 2-of-3 annotator majority; words without one are labelled `IGN` (kept as context,
@@ -191,7 +198,12 @@ the proxy-data caveat. `--checkpoint` accepts that id (downloaded once, ~1.1 GB)
 - training sentences that also occur in the test file are removed (4,107 of its 4,944 usable sentences are
   duplicated in COMI-LINGUA's train file);
 - words are re-split with the pipeline tokenizer, so training and inference see the same tokens;
-- the result is 6,540 train / 727 valid / 750 test sentences.
+- the result is 6,540 train / 727 valid / 750 test sentences;
+- `scripts/check_split_overlap.py` checks the result (`results/split_overlap.json`): no two splits share a
+  sentence or a word sequence. A looser check (word-set overlap ≥ 0.9) finds 11 test sentences with a near
+  copy in train (10) or valid (1), e.g. the same tweet with "." typed as "0" or an @mention added. Without
+  them the trained model scores 0.9615 instead of 0.9618 on test, so they are reported, not removed;
+  dropping such near copies from train/valid is a candidate clean-up for iteration 2.
 
 **Augmentation (proposal §7.2):** spelling variation is synthesized rule-by-rule
 (`src/classifier/augment.py:synthetic_variants`), while ambiguity cannot be synthesized and is covered by
@@ -208,12 +220,33 @@ Implemented in `src/eval/metrics.py`:
 - **CMI** (Gambäck & Das, 2014) with the length normalization `100·(1−Σpₗ²)/(1−1/n)`;
 - words labelled `IGN` (no annotator majority) are left out of every score and reported as `ignored`;
 - **stage-wise comparison**: `scripts/evaluate.py --checkpoint … --tau 0` scores Stage 2 alone (no rule can
-  fire); the default τ scores Stage 2 + Stage 3;
+  fire); without `--tau` it scores Stage 2 + Stage 3 at the τ tuned for that checkpoint (below), else at
+  `DEFAULT_TAU`;
+- **Stage-3 threshold τ, selected on the validation split** (`scripts/tune_tau.py`): Stage 2 runs once, then
+  the rules are re-applied at every τ where a decision can change (the confidence of each word a rule would
+  re-label, tried at that confidence and just above it) plus a 0.01 grid. The best validation macro-F1 (then
+  accuracy) wins; among the τ values that tie on it, the largest one before the score first drops is kept, so
+  the rules re-check every word they can at no cost on validation. τ = 0 is always a candidate, so the
+  selected τ never scores below Stage 2 alone on validation. A fine grid around the selected τ (steps of
+  0.0001, `zoom.csv`) is scored as a check. The value is saved as `<checkpoint>/stage3.json` and used when no `--tau` is given
+  (precedence: `--tau` > tuned value > `DEFAULT_TAU` = 0.55, which the fallback mode keeps; a `stage3.json`
+  older than the model weights is ignored). The test split and the demo sets are scored only for reporting;
 - categories: the demo slice carries gold categories; COMI-LINGUA has none, so its per-category report uses
   Stage 1's form-level categories, including `unknown` for words outside the seed lexicons;
 - baseline adapters (`src/eval/baselines/`): the model-free fallback, plus an off-the-shelf **MixLID**
   adapter (2026 token-level LID model; its label inventory has `urd_Arab` but **no `urd_Latn`**, so it
   cannot label Latin-script Urdu — the adapter reports this failure mode).
+
+```bash
+# Select τ for a local checkpoint on the validation split; test and demo sets are reported, never used to
+# choose. Writes checkpoints/ruen-lid/stage3.json and results/stage3_tau/ (~2 minutes on the GPU).
+python3 scripts/tune_tau.py --checkpoint checkpoints/ruen-lid \
+  --valid data/cache/comi-lingua-lid/roman/valid.csv --test data/cache/comi-lingua-lid/roman/test.csv \
+  --calibration
+
+# The tuned τ is then used automatically (stderr: "[stage3] tau = 0.5684722065925598 (tuned, …)")
+python3 scripts/evaluate.py --data data/cache/comi-lingua-lid/roman/test.csv --checkpoint checkpoints/ruen-lid
+```
 
 ## 9. Results — iteration 1
 
@@ -238,6 +271,24 @@ results, not yet a Roman Urdu result** (see §10).
 The curve levels off between 5,000 and 6,540 training sentences. Stage 3 changes almost nothing with the
 trained model: on the COMI-LINGUA test split it changed 1 of 15,207 tokens at τ = 0.55, and that change was
 wrong, because only 0.5% of tokens fall below τ.
+
+**Stage-3 threshold selected on validation** ([`results/stage3_tau/summary.md`](results/stage3_tau/summary.md)):
+for this model the selected value is **τ ≈ 0.568** (0.56847, the confidence of one validation word). No τ
+beats Stage 2 alone on the validation split: up to that value the rules re-check 62 low-confidence validation
+words and change none, and one step higher the English-lexicon rule turns an Urdu *a* into English; every
+higher τ breaks more labels than it fixes. On the test split (reporting only) the selected τ re-checks 91
+words and changes one, wrongly: 0.9617 · 0.9352, the same as the old default 0.55, against 0.9618 · 0.9352
+with Stage 3 off (τ = 0). With the local checkpoint the pipeline now uses the tuned τ automatically; the table
+above is at τ = 0.55.
+
+**Side experiments** ([`experiments/`](experiments/), Stage 2 alone, mean of 3 seeds on the same test split):
+- *Training for longer* ([`02_longer_training`](experiments/02_longer_training/)): with up to 15 epochs
+  instead of 5, validation macro-F1 is flat from epoch 3 and test accuracy moves by at most 0.003 (6,540
+  sentences: 0.9623 vs 0.9631). Five epochs were enough; the released model stays.
+- *Keeping the Devanagari sentences* ([`01_devanagari`](experiments/01_devanagari/)): adding COMI-LINGUA's
+  18,538 training sentences that contain Hindi script (25,078 in total), with the Hindi-script words labelled
+  `OTH` or left as `IGN` context, gives no gain (0.9618 ± 0.0026 and 0.9624 ± 0.0005 vs 0.9626 ± 0.0009), and
+  the `OTH` version lowers English recall (0.938 vs 0.948). The Roman-only training data stays.
 
 The 25-token running-example slice is committed as `data/demo/running_examples.csv`; reproduce that row
 with `python3 scripts/evaluate.py --data data/demo/running_examples.csv --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1`.
@@ -301,8 +352,11 @@ Documented deviations, each deliberate and justified:
    This is the deliberate iteration-1 scope; §10.1 gives the methodological justification.
 10. **Augmentation is implemented but not yet used in training** (§7).
 11. **Stage 3 has almost no effect with the trained model** (§9): its rules only re-check tokens below τ, and
-    the classifier is rarely that unsure. §10.2 explains why this is the expected outcome of the proposal's
-    conservative design, not a missing stage.
+    the classifier is rarely that unsure. τ is no longer a fixed guess: `scripts/tune_tau.py` selects it on
+    the validation split, and for the iteration-1 model it selects τ ≈ 0.568, the largest value at which the
+    rules change no validation label (on test they change one). `DEFAULT_TAU = 0.55`
+    remains only for the fallback mode and untuned checkpoints. §10.2 explains why this is the expected
+    outcome of the proposal's conservative design, not a missing stage.
 
 ### 10.1 Why Stage 1 is implemented but not yet conditioned into Stage 2
 
@@ -344,8 +398,20 @@ That is the result the ablation is designed to expose, not a missing component. 
 into the pipeline, records per-token attributions, and is measured at τ = 0 (off), 0.55 (default), and 0.75
 in `results/iteration1_results.md` §3.5. The negative result supports the proposal's risk mitigation: when
 the context classifier is confident, conservative rules have little to correct, and aggressive rules would
-introduce errors. Iteration 2 revisits the rules after RU–EN retraining and reports whether Stage 3 earns
-its place in the ladder.
+introduce errors.
+
+The threshold is now selected from data rather than assumed (`scripts/tune_tau.py`,
+[`results/stage3_tau/summary.md`](results/stage3_tau/summary.md)). Sweeping every τ on the validation split
+shows that no threshold makes Stage 2 + Stage 3 better than Stage 2 alone; the selected τ ≈ 0.568 is the
+largest one that costs nothing, so the rules stay on for the least confident words. Nearly all would-be
+firings come from `english-lexicon-prior` on Hindi/Urdu words that the seed Roman Urdu lexicon lacks
+(*hi, me, or, the*), so Stage 1 gives them only an English reading and the rule's premise is wrong (121 of
+its 122 validation candidates would be broken); `variant-consistency` would flip the English *he*. The
+Stage-2 confidence is somewhat over-confident (expected calibration error 0.021; temperature scaling with
+T = 1.49, fitted on validation, brings it to 0.005 on test), and the rescaled confidences also give no τ
+that beats Stage 2 alone.
+Iteration 2 revisits the rules (lexicon coverage first) after RU–EN retraining, re-tunes τ on that
+validation split, and reports whether Stage 3 earns its place in the ladder.
 
 ### 10.3 What iteration 1 claims — and what it does not
 
@@ -381,7 +447,8 @@ The required step-by-step mapping table lives in [`METHODOLOGY_TO_CODE.md`](METH
 2. Full annotation of the RU–EN evaluation sample (P2).
 3. Replace seed lexicons with full lexicons + Dakshina attestation mining; add the ambiguous/"both" forms
    found in COMI-LINGUA (*me, or, bat, use, hi*).
-4. Train the XLM-R classifier on the annotated RU–EN data (P3); proxy-data training is done (§7, §9).
+4. Train the XLM-R classifier on the annotated RU–EN data (P3); proxy-data training is done (§7, §9). For
+   any further proxy runs, drop train/valid sentences that near-copy a test sentence (§7).
 5. Feed Stage 1's candidate readings into the classifier and use the augmentation in training, so the
    ablation ladder can separate the stages; revisit Stage 3 for a confident classifier.
 6. Run baselines (off-the-shelf tools, MixLID, LLMs) and the ablation ladder (P5–P6).
