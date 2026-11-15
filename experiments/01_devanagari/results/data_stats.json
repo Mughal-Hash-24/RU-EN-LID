@@ -1,0 +1,131 @@
+{
+  "filtering": [
+    {
+      "step": "parsed_rows",
+      "remaining": 30074,
+      "parse_failures": {
+        "token_list_mismatch": 413
+      }
+    },
+    {
+      "step": "has_devanagari",
+      "dropped": 7990,
+      "remaining": 22084
+    },
+    {
+      "step": "text_in_test_file",
+      "dropped": 3523,
+      "remaining": 18561
+    },
+    {
+      "step": "duplicate_text",
+      "dropped": 9,
+      "remaining": 18552
+    },
+    {
+      "step": "no_words_left",
+      "dropped": 0,
+      "remaining": 18552
+    },
+    {
+      "step": "no_ur_or_en_word (gold labels)",
+      "dropped": 0,
+      "remaining": 18552
+    },
+    {
+      "step": "token_sequence_in_valid_or_test",
+      "dropped": 0,
+      "remaining": 18552
+    },
+    {
+      "step": "duplicate_token_sequence",
+      "dropped": 14,
+      "remaining": 18538
+    }
+  ],
+  "added_sentences": {
+    "total": 18538,
+    "with_latin_words": 15946,
+    "devanagari_and_digits_only": 2592
+  },
+  "added_words_gold_labels": {
+    "devanagari": {
+      "UR": 280540,
+      "EN": 28132,
+      "OTH": 1033,
+      "IGN": 106
+    },
+    "latin_or_digit": {
+      "UR": 1079,
+      "EN": 60709,
+      "OTH": 8184,
+      "IGN": 143
+    }
+  },
+  "variants": {
+    "deva_oth": {
+      "path": "data\\cache\\experiments\\01_devanagari\\deva_oth\\train.csv",
+      "sentences": 25078,
+      "words": 469290,
+      "labels": {
+        "UR": 58442,
+        "EN": 80236,
+        "OTH": 329180,
+        "IGN": 1432
+      },
+      "trained_label_share": {
+        "UR": 0.1249,
+        "EN": 0.1715,
+        "OTH": 0.7036
+      }
+    },
+    "deva_ign": {
+      "path": "data\\cache\\experiments\\01_devanagari\\deva_ign\\train.csv",
+      "sentences": 25078,
+      "words": 469290,
+      "labels": {
+        "UR": 58442,
+        "EN": 80236,
+        "OTH": 19369,
+        "IGN": 311243
+      },
+      "trained_label_share": {
+        "UR": 0.3698,
+        "EN": 0.5077,
+        "OTH": 0.1226
+      }
+    },
+    "roman": {
+      "path": "data\\cache\\comi-lingua-lid\\roman\\train.csv",
+      "sentences": 6540,
+      "words": 89364,
+      "labels": {
+        "UR": 57363,
+        "EN": 19527,
+        "OTH": 11185,
+        "IGN": 1289
+      },
+      "trained_label_share": {
+        "UR": 0.6513,
+        "EN": 0.2217,
+        "OTH": 0.127
+      }
+    }
+  },
+  "xlmr_pieces_per_sentence": {
+    "roman": {
+      "sentences": 6540,
+      "total_pieces": 154113,
+      "median": 21.0,
+      "max": 106,
+      "over_256": 0
+    },
+    "added": {
+      "sentences": 18538,
+      "total_pieces": 573191,
+      "median": 30.0,
+      "max": 106,
+      "over_256": 0
+    }
+  }
+}

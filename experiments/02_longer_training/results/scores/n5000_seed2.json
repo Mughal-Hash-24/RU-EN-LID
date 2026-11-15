@@ -1,0 +1,788 @@
+{
+  "checkpoint": "checkpoints/experiments/02_longer_training/n5000_seed2",
+  "tau": 0.55,
+  "device": "cuda",
+  "sets": {
+    "test": {
+      "file": "data/cache/comi-lingua-lid/roman/test.csv",
+      "sentences": 750,
+      "stage2": {
+        "tokens": 15207,
+        "ignored": 252,
+        "accuracy": 0.9617,
+        "macro_f1": 0.9349,
+        "cmi": 50.7,
+        "per_category": {
+          "ambiguous": {
+            "tokens": 223,
+            "accuracy": 0.9821,
+            "macro_f1": 0.9806
+          },
+          "both": {
+            "tokens": 27,
+            "accuracy": 0.963,
+            "macro_f1": 0.9594
+          },
+          "standard": {
+            "tokens": 4649,
+            "accuracy": 0.9927,
+            "macro_f1": 0.7619
+          },
+          "unknown": {
+            "tokens": 10156,
+            "accuracy": 0.9466,
+            "macro_f1": 0.9292
+          },
+          "variant": {
+            "tokens": 152,
+            "accuracy": 0.9934,
+            "macro_f1": 0.4983
+          }
+        },
+        "errors": 582,
+        "error_share_by_cause": {
+          "ambiguous": 0.0069,
+          "both": 0.0017,
+          "standard": 0.0584,
+          "unknown": 0.9313,
+          "variant": 0.0017
+        },
+        "per_label": {
+          "UR": {
+            "precision": 0.977582065652522,
+            "recall": 0.9845781675234352,
+            "f1": 0.9810676442524985,
+            "support": 9921
+          },
+          "EN": {
+            "precision": 0.9497459062676454,
+            "recall": 0.9500141203049985,
+            "f1": 0.9498799943526753,
+            "support": 3541
+          },
+          "OTH": {
+            "precision": 0.8924088463837417,
+            "recall": 0.8555873925501433,
+            "f1": 0.8736102984201287,
+            "support": 1745
+          }
+        },
+        "confusion": {
+          "EN->EN": 3364,
+          "EN->OTH": 108,
+          "EN->UR": 69,
+          "OTH->EN": 97,
+          "OTH->OTH": 1493,
+          "OTH->UR": 155,
+          "UR->EN": 81,
+          "UR->OTH": 72,
+          "UR->UR": 9768
+        },
+        "ambiguous_forms": {
+          "to": {
+            "UR": [
+              82,
+              83
+            ],
+            "EN": [
+              38,
+              41
+            ]
+          },
+          "he": {
+            "UR": [
+              11,
+              11
+            ],
+            "EN": [
+              9,
+              10
+            ]
+          },
+          "is": {
+            "EN": [
+              36,
+              36
+            ],
+            "UR": [
+              11,
+              11
+            ]
+          },
+          "do": {
+            "UR": [
+              13,
+              13
+            ],
+            "EN": [
+              5,
+              5
+            ]
+          },
+          "main": {
+            "UR": [
+              32,
+              32
+            ]
+          },
+          "band": {
+            "UR": [
+              2,
+              2
+            ]
+          },
+          "bar": {
+            "UR": [
+              6,
+              6
+            ]
+          },
+          "me": {
+            "UR": [
+              96,
+              98
+            ],
+            "EN": [
+              6,
+              8
+            ]
+          },
+          "or": {
+            "UR": [
+              8,
+              9
+            ],
+            "EN": [
+              0,
+              1
+            ]
+          },
+          "hi": {
+            "UR": [
+              86,
+              86
+            ],
+            "EN": [
+              1,
+              2
+            ],
+            "OTH": [
+              0,
+              1
+            ]
+          },
+          "use": {
+            "UR": [
+              3,
+              9
+            ],
+            "EN": [
+              13,
+              13
+            ]
+          },
+          "bat": {
+            "UR": [
+              2,
+              2
+            ],
+            "EN": [
+              0,
+              1
+            ]
+          }
+        }
+      },
+      "stage3": {
+        "tokens": 15207,
+        "ignored": 252,
+        "accuracy": 0.9617,
+        "macro_f1": 0.9348,
+        "cmi": 50.7,
+        "per_category": {
+          "ambiguous": {
+            "tokens": 223,
+            "accuracy": 0.9821,
+            "macro_f1": 0.9806
+          },
+          "both": {
+            "tokens": 27,
+            "accuracy": 0.963,
+            "macro_f1": 0.9594
+          },
+          "standard": {
+            "tokens": 4649,
+            "accuracy": 0.9925,
+            "macro_f1": 0.7617
+          },
+          "unknown": {
+            "tokens": 10156,
+            "accuracy": 0.9466,
+            "macro_f1": 0.9292
+          },
+          "variant": {
+            "tokens": 152,
+            "accuracy": 0.9934,
+            "macro_f1": 0.4983
+          }
+        },
+        "errors": 583,
+        "error_share_by_cause": {
+          "ambiguous": 0.0069,
+          "both": 0.0017,
+          "standard": 0.06,
+          "unknown": 0.9297,
+          "variant": 0.0017
+        },
+        "per_label": {
+          "UR": {
+            "precision": 0.9775798218396556,
+            "recall": 0.9844773712327386,
+            "f1": 0.9810164724789072,
+            "support": 9921
+          },
+          "EN": {
+            "precision": 0.9494778436353373,
+            "recall": 0.9500141203049985,
+            "f1": 0.9497459062676454,
+            "support": 3541
+          },
+          "OTH": {
+            "precision": 0.8924088463837417,
+            "recall": 0.8555873925501433,
+            "f1": 0.8736102984201287,
+            "support": 1745
+          }
+        },
+        "confusion": {
+          "EN->EN": 3364,
+          "EN->OTH": 108,
+          "EN->UR": 69,
+          "OTH->EN": 97,
+          "OTH->OTH": 1493,
+          "OTH->UR": 155,
+          "UR->EN": 82,
+          "UR->OTH": 72,
+          "UR->UR": 9767
+        },
+        "ambiguous_forms": {
+          "to": {
+            "UR": [
+              82,
+              83
+            ],
+            "EN": [
+              38,
+              41
+            ]
+          },
+          "he": {
+            "UR": [
+              11,
+              11
+            ],
+            "EN": [
+              9,
+              10
+            ]
+          },
+          "is": {
+            "EN": [
+              36,
+              36
+            ],
+            "UR": [
+              11,
+              11
+            ]
+          },
+          "do": {
+            "UR": [
+              13,
+              13
+            ],
+            "EN": [
+              5,
+              5
+            ]
+          },
+          "main": {
+            "UR": [
+              32,
+              32
+            ]
+          },
+          "band": {
+            "UR": [
+              2,
+              2
+            ]
+          },
+          "bar": {
+            "UR": [
+              6,
+              6
+            ]
+          },
+          "me": {
+            "UR": [
+              95,
+              98
+            ],
+            "EN": [
+              6,
+              8
+            ]
+          },
+          "or": {
+            "UR": [
+              8,
+              9
+            ],
+            "EN": [
+              0,
+              1
+            ]
+          },
+          "hi": {
+            "UR": [
+              86,
+              86
+            ],
+            "EN": [
+              1,
+              2
+            ],
+            "OTH": [
+              0,
+              1
+            ]
+          },
+          "use": {
+            "UR": [
+              3,
+              9
+            ],
+            "EN": [
+              13,
+              13
+            ]
+          },
+          "bat": {
+            "UR": [
+              2,
+              2
+            ],
+            "EN": [
+              0,
+              1
+            ]
+          }
+        },
+        "stage3_changes": {
+          "changed": 1,
+          "fixed": 0,
+          "broke": 1
+        }
+      }
+    },
+    "running_examples": {
+      "file": "data/demo/running_examples.csv",
+      "sentences": 2,
+      "stage2": {
+        "tokens": 25,
+        "ignored": 0,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "cmi": 45.33,
+        "per_category": {
+          "ambiguous": {
+            "tokens": 5,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "both": {
+            "tokens": 2,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "standard": {
+            "tokens": 13,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "variant": {
+            "tokens": 5,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          }
+        },
+        "errors": 0,
+        "error_share_by_cause": {},
+        "per_label": {
+          "UR": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 17
+          },
+          "EN": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8
+          },
+          "OTH": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion": {
+          "EN->EN": 8,
+          "UR->UR": 17
+        },
+        "ambiguous_forms": {
+          "to": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "he": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "is": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "main": {
+            "UR": [
+              3,
+              3
+            ]
+          },
+          "band": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "bar": {
+            "UR": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      "stage3": {
+        "tokens": 25,
+        "ignored": 0,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "cmi": 45.33,
+        "per_category": {
+          "ambiguous": {
+            "tokens": 5,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "both": {
+            "tokens": 2,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "standard": {
+            "tokens": 13,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "variant": {
+            "tokens": 5,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          }
+        },
+        "errors": 0,
+        "error_share_by_cause": {},
+        "per_label": {
+          "UR": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 17
+          },
+          "EN": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8
+          },
+          "OTH": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion": {
+          "EN->EN": 8,
+          "UR->UR": 17
+        },
+        "ambiguous_forms": {
+          "to": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "he": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "is": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "main": {
+            "UR": [
+              3,
+              3
+            ]
+          },
+          "band": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "bar": {
+            "UR": [
+              1,
+              1
+            ]
+          }
+        },
+        "stage3_changes": {
+          "changed": 0,
+          "fixed": 0,
+          "broke": 0
+        }
+      }
+    },
+    "demo": {
+      "file": "data/demo/seed_labels.csv",
+      "sentences": 12,
+      "stage2": {
+        "tokens": 51,
+        "ignored": 0,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "cmi": 38.75,
+        "per_category": {
+          "ambiguous": {
+            "tokens": 8,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "both": {
+            "tokens": 3,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "standard": {
+            "tokens": 34,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "variant": {
+            "tokens": 6,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          }
+        },
+        "errors": 0,
+        "error_share_by_cause": {},
+        "per_label": {
+          "UR": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 38
+          },
+          "EN": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 13
+          },
+          "OTH": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion": {
+          "EN->EN": 13,
+          "UR->UR": 38
+        },
+        "ambiguous_forms": {
+          "he": {
+            "UR": [
+              1,
+              1
+            ],
+            "EN": [
+              1,
+              1
+            ]
+          },
+          "is": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "do": {
+            "UR": [
+              2,
+              2
+            ]
+          },
+          "main": {
+            "UR": [
+              3,
+              3
+            ]
+          },
+          "band": {
+            "UR": [
+              2,
+              2
+            ]
+          },
+          "bar": {
+            "UR": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      "stage3": {
+        "tokens": 51,
+        "ignored": 0,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "cmi": 38.75,
+        "per_category": {
+          "ambiguous": {
+            "tokens": 8,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "both": {
+            "tokens": 3,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "standard": {
+            "tokens": 34,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          },
+          "variant": {
+            "tokens": 6,
+            "accuracy": 1.0,
+            "macro_f1": 1.0
+          }
+        },
+        "errors": 0,
+        "error_share_by_cause": {},
+        "per_label": {
+          "UR": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 38
+          },
+          "EN": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 13
+          },
+          "OTH": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion": {
+          "EN->EN": 13,
+          "UR->UR": 38
+        },
+        "ambiguous_forms": {
+          "he": {
+            "UR": [
+              1,
+              1
+            ],
+            "EN": [
+              1,
+              1
+            ]
+          },
+          "is": {
+            "UR": [
+              1,
+              1
+            ]
+          },
+          "do": {
+            "UR": [
+              2,
+              2
+            ]
+          },
+          "main": {
+            "UR": [
+              3,
+              3
+            ]
+          },
+          "band": {
+            "UR": [
+              2,
+              2
+            ]
+          },
+          "bar": {
+            "UR": [
+              1,
+              1
+            ]
+          }
+        },
+        "stage3_changes": {
+          "changed": 0,
+          "fixed": 0,
+          "broke": 0
+        }
+      }
+    }
+  }
+}
