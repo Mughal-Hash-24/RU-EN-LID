@@ -68,19 +68,10 @@ def relative(path: Path) -> str:
     return os.path.relpath(path, ROOT).replace(os.sep, "/") if path.is_relative_to(ROOT) else str(path)
 
 
-def word_logits(predictor, words: list[str]) -> list[list[float] | None]:
-    """First-piece logits of every word, computed exactly as TokenLIDPredictor.predict_words does."""
-    encoding = predictor.tokenizer(
-        words, is_split_into_words=True, truncation=True, max_length=512, return_tensors="pt"
-    )
-    inputs = {key: value.to(predictor.device) for key, value in encoding.items()}
-    with predictor.torch.no_grad():
-        logits = predictor.model(**inputs).logits[0].to("cpu")
-    first: dict[int, list[float]] = {}
-    for position, word_id in enumerate(encoding.word_ids(0)):
-        if word_id is not None and word_id not in first:
-            first[word_id] = logits[position].tolist()
-    return [first.get(index) for index in range(len(words))]
+def word_logits(predictor, words: list[str], candidates) -> list[list[float] | None]:
+    """Raw first-piece logits of every word, from the same forward pass predict_words uses
+    (so a candidate-conditioned checkpoint also gets Stage 1's features)."""
+    return [None if row is None else row.tolist() for row in predictor.word_logits(words, candidates)]
 
 
 def run_stage2(predictor, expander: CandidateExpander, path: Path, with_logits: bool):
@@ -92,9 +83,9 @@ def run_stage2(predictor, expander: CandidateExpander, path: Path, with_logits: 
         if len(tokens) != len(sentence.words):
             raise ValueError(f"{path.name} {sentence.sentence_id}: {len(sentence.words)} words, {len(tokens)} tokens")
         words = [token.surface for token in tokens]
-        predictions = tuple((p.label, p.confidence) for p in predictor.predict_words(words))
+        predictions = tuple((p.label, p.confidence) for p in predictor.predict_words(words, candidates=tokens))
         scored.append(ScoredSentence(tuple(tokens), predictions, tuple(sentence.labels)))
-        logits.append(word_logits(predictor, words) if with_logits else [])
+        logits.append(word_logits(predictor, words, tokens) if with_logits else [])
     return scored, logits
 
 

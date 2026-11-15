@@ -276,7 +276,7 @@ changed, wrongly; 0.9617 as at 0.55). See [`stage3_tau/summary.md`](stage3_tau/s
 | RQ1: improvement over tools / a plain encoder | So far only against the fallback: 0.42 → 0.96 on the stand-in test set. The off-the-shelf baselines (Microsoft LID, GlotLID/OpenLID, MaskLID, LLMs) haven't been run yet |
 | RQ2: share of error by cause | Not measurable yet. The demo slice has no errors left, and on COMI-LINGUA the categories are spelling-based (91% of the remaining errors fall on words "unknown" to the seed lists). Gold categories need the planned annotation |
 | RQ3: contribution of each stage | Stage 3: ≈ 0 (one word worse at τ 0.55). Stage 1: can't be measured yet by design — this iteration establishes the plain-encoder rung; the + candidate-expansion rung is iteration 2 (README §10.1) |
-| RQ4: behaviour as mixing increases | Not measured. It needs a per-sentence code-mixing index. The current CMI function returns one corpus-level number, and its formula should be checked against Gambäck & Das |
+| RQ4: behaviour as mixing increases | Not measured yet. `src/eval/metrics.py` now computes the Gambäck & Das CMI per sentence (`cmi()`, `mean_sentence_cmi()`), so test sentences can be grouped into mixing levels; that analysis has not been run |
 
 ## 5. Limitations
 

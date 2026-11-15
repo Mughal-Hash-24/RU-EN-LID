@@ -46,7 +46,7 @@ class CandidateExpander:
         resources_dir: str,
         english_path: str | None = None,
         urdu_path: str | None = None,
-    ) -> "CandidateExpander":
+    ) -> CandidateExpander:
         lexicons = load_lexicons(resources_dir, english_path=english_path, urdu_path=urdu_path)
         pairs_path = os.path.join(resources_dir, "variant_pairs.tsv")
         pairs = load_variant_pairs(pairs_path) if os.path.exists(pairs_path) else {}

@@ -97,7 +97,8 @@ def main(argv: list[str] | None = None) -> int:
             tokens = expander.expand(" ".join(sentence.words))
             if len(tokens) != len(sentence.words):
                 raise ValueError(f"{name} {sentence.sentence_id}: {len(sentence.words)} words, {len(tokens)} tokens")
-            predictions = [(p.label, p.confidence) for p in predictor.predict_words([t.surface for t in tokens])]
+            outputs = predictor.predict_words([t.surface for t in tokens], candidates=tokens)
+            predictions = [(p.label, p.confidence) for p in outputs]
             stage2 = apply_rules(tokens, predictions, 0.0)
             stage3 = apply_rules(tokens, predictions, args.tau)
             for index, (info, plain, verified) in enumerate(zip(tokens, stage2, stage3)):

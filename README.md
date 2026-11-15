@@ -39,16 +39,11 @@ downloaded models. Stage 2 requires `torch`/`transformers`/`accelerate` and a tr
 
 ## 3. Architecture
 
-```mermaid
-flowchart LR
-    A["Input sentence<br/>(Roman Urdu–English)"] --> B["Stage 1 — Candidate expansion<br/>English lexicon ∩ Roman Urdu lexicon<br/>attested variant pairs<br/>surface form kept"]
-    B --> C["Stage 2 — Context-aware classifier<br/>XLM-R token classification<br/>fine-tuned on COMI-LINGUA<br/>Latin-script proxy (hi → UR)"]
-    C --> D["Stage 3 — Rule-based verification<br/>lexicon priors · confidence gating ·<br/>consistency checks (conservative)"]
-    D --> E["Token labels (UR / EN)<br/>+ category + per-rule attribution"]
+![Proposed architecture: overview](docs/architecture/overview.svg)
 
-    R["Resources<br/>seed lexicons · variant_pairs.tsv<br/>Dakshina (planned)"] --> B
-    T["Training data (proxy)<br/>COMI-LINGUA Latin-script splits<br/>scripts/prepare_comi_lingua.py"] -.-> C
-```
+Stage 1 tags each word from the lexicons without rewriting it; Stage 2 (XLM-R) reads the sentence with
+those tags and gives each word UR, EN or OTH with a confidence; words below the gate τ go to Stage 3,
+which applies one resolver per tag. Detailed diagrams for each stage: [docs/architecture](docs/architecture/README.md).
 
 ## 4. Repository layout
 
@@ -59,6 +54,7 @@ ruen-lid-pipeline/
 ├── LICENSE                    # MIT for the code; data/model licences are noted in §11
 ├── requirements.txt           # Stage-2 training dependencies
 ├── .github/workflows/tests.yml # standard-library test suite (Python 3.10/3.12/3.13)
+├── docs/architecture/         # proposed-architecture diagrams (SVG + 2x PNG), built by scripts/make_architecture_diagrams.py
 ├── data/
 │   ├── README.md              # dataset links, licences, roles
 │   ├── fetch_data.py          # downloads into data/cache (never committed)
@@ -67,10 +63,10 @@ ruen-lid-pipeline/
 │       ├── seed_labels.csv    # hand-labelled demo slice (12 sentences / 51 tokens)
 │       └── running_examples.csv # proposal's two running examples (25 tokens)
 ├── src/
-│   ├── candidate_expansion/   # Stage 1
-│   ├── classifier/            # Stage 2 (dataset, augment, train, predict)
-│   ├── verification/          # Stage 3 (rules + threshold selection)
-│   ├── eval/                  # metrics, calibration, baseline adapters
+│   ├── candidate_expansion/   # Stage 1 (+ lexicons induced from training labels)
+│   ├── classifier/            # Stage 2 (dataset, augment, train, predict, Stage-1 features, candidate model, calibrate)
+│   ├── verification/          # Stage 3 (rules, context decoder, threshold selection)
+│   ├── eval/                  # metrics, selective evaluation, calibration, baseline adapters
 │   └── pipeline.py            # end-to-end CLI
 ├── scripts/
 │   ├── evaluate.py            # token-level evaluation + markdown report
@@ -78,9 +74,12 @@ ruen-lid-pipeline/
 │   ├── check_split_overlap.py # checks that train / valid / test share no sentences
 │   ├── learning_curve.py      # Stage-2 learning curve (subset sizes × seeds) + scoring
 │   ├── tune_tau.py            # Stage-3 threshold τ selected on validation -> <checkpoint>/stage3.json
+│   ├── tune_stage3.py         # Stage-3 grid over τ × context penalty on validation
+│   ├── build_lexicon.py       # Stage-1 resource folder: seeds + words induced from the training split
+│   ├── make_architecture_diagrams.py # docs/architecture/*.svg from the pipeline
 │   └── train_poc.py           # Stage-2 entry point (dry-run / smoke / real)
 ├── experiments/               # side experiments on the iteration-1 setup (Devanagari sentences, longer training)
-├── tests/test_pipeline.py     # 24 unit tests (stdlib unittest)
+├── tests/                     # 61 unit tests (stdlib unittest; the 6 model tests need torch)
 ├── results/
 │   ├── seed_results.md        # demo-slice evaluation in fallback mode (before Stage 2 was trained)
 │   ├── iteration1_results.md  # trained Stage 2 vs fallback, learning curve, Stage 3 effect
@@ -113,7 +112,7 @@ python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, ma
 # The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
 python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# Unit tests (24 tests)
+# Unit tests (61 tests; 55 run without torch)
 python3 -m unittest discover -s tests
 
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
@@ -216,7 +215,7 @@ Implemented in `src/eval/metrics.py`:
 - token accuracy and macro-F1, overall and **per category** (standard / ambiguous / variant / both);
 - **error share by cause** — what fraction of errors sit on ambiguous tokens, on variant tokens, and on
   their overlap;
-- **CMI** (Gambäck & Das, 2014) with the length normalization `100·(1−Σpₗ²)/(1−1/n)`;
+- **CMI** (Gambäck & Das, 2014) per sentence, `100·(1 − max wᵢ/(n − u))` with OTH and IGN as the language-independent tokens u, averaged over sentences (0–50 for two languages);
 - words labelled `IGN` (no annotator majority) are left out of every score and reported as `ignored`;
 - **stage-wise comparison**: `scripts/evaluate.py --checkpoint … --tau 0` scores Stage 2 alone (no rule can
   fire); without `--tau` it scores Stage 2 + Stage 3 at the τ tuned for that checkpoint (below), else at
@@ -302,7 +301,7 @@ From `results/seed_results.md` (12 sentences, 51 tokens; **demo, not a thesis re
 |---|---|
 | Token accuracy | 0.8235 |
 | Macro F1 | 0.7984 |
-| CMI (gold labels, corpus-level) | 38.75 |
+| CMI (gold labels, mean per sentence) | 22.36 |
 | Errors | 9 |
 
 | Category | Tokens | Accuracy | Macro F1 |
@@ -429,6 +428,33 @@ CMI-band analysis.
 
 This scope matches the implementation rubric: full results are not required while the work is in progress;
 a working core implementation, mapped to the methodology and documented, is.
+
+### 10.4 Iteration 2 (in progress): Stage 1 feeds Stage 2, Stage 3 uses context
+
+Implemented and unit-tested; **not yet trained or evaluated on COMI-LINGUA**, so no results are claimed.
+
+- **Stage 1 → Stage 2.** `train.py --candidates tag|tag+reading` adds each word's Stage-1 evidence tag (EN, UR, AMB, VAR, BOTH, UNK) and its Urdu canonical reading to the XLM-R input embedding. The new parameters start at zero, so the ablation against the plain model changes nothing else.
+- **Lexicon coverage.** `scripts/build_lexicon.py` grows the seeds from the training split's labels and writes a new resource folder (EN, UR, and an observed AMB set); pass it to any tool with `--resources`. Build it from training data only.
+- **Stage 3 context.** With `--context-penalty λ > 0`, deferred ambiguous and unknown words are re-decoded with a cost λ per UR↔EN switch; accepted and rule-fixed words never change. λ = 0 is iteration-1 behaviour. Variants are not re-decoded: on the running example that turned *he* (= *hai*) after "same issue" into English.
+- **Evaluation.** `scripts/evaluate.py` now also reports coverage, accuracy on accepted vs deferred words, and Stage-3 fixes and breaks per rule and per Stage-1 category.
+
+```bash
+D=data/cache/comi-lingua-lid/roman
+python3 scripts/build_lexicon.py --train $D/train.csv --out data/resources_induced --check $D/valid.csv
+# same hyperparameters as the iteration-1 run, so only --candidates differs
+python3 -m src.classifier.train --train $D/train.csv --valid $D/valid.csv \
+  --model xlm-roberta-base --epochs 5 --batch-size 16 --learning-rate 3e-5 \
+  --warmup-ratio 0.1 --weight-decay 0.01 --max-length 256 --bf16 --select-best \
+  --candidates tag --resources data/resources_induced --out checkpoints/run-tag
+python3 -m src.classifier.calibrate --checkpoint checkpoints/run-tag --valid $D/valid.csv \
+  --resources data/resources_induced
+python3 scripts/tune_stage3.py --data $D/valid.csv --checkpoint checkpoints/run-tag \
+  --resources data/resources_induced
+python3 scripts/evaluate.py --data $D/test.csv --checkpoint checkpoints/run-tag \
+  --resources data/resources_induced --tau <best> --context-penalty <best>
+```
+
+Compare against the iteration-1 model on the same test split (`--candidates none`, same seeds), and report the ambiguous and unknown rows of the Stage-1 category table, not only overall accuracy.
 
 ## 11. Datasets
 
