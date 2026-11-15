@@ -80,7 +80,7 @@ ruen-lid-pipeline/
 │   ├── tune_tau.py            # Stage-3 threshold τ selected on validation -> <checkpoint>/stage3.json
 │   └── train_poc.py           # Stage-2 entry point (dry-run / smoke / real)
 ├── experiments/               # side experiments on the iteration-1 setup (Devanagari sentences, longer training)
-├── tests/test_pipeline.py     # 22 unit tests (stdlib unittest)
+├── tests/test_pipeline.py     # 24 unit tests (stdlib unittest)
 ├── results/
 │   ├── seed_results.md        # demo-slice evaluation in fallback mode (before Stage 2 was trained)
 │   ├── iteration1_results.md  # trained Stage 2 vs fallback, learning curve, Stage 3 effect
@@ -113,7 +113,7 @@ python3 -m src.pipeline --text "Delivery to time pe hui but box band nhi tha, ma
 # The same with the trained Stage-2 model from Hugging Face (§7; ~1.1 GB, downloaded on first use)
 python3 -m src.pipeline --checkpoint OmarNiazi/ruen-lid-xlmr-base-iter1 --text "Delivery to time pe hui but box band nhi tha, main bht upset hoon, is bar bhi same issue he."
 
-# Unit tests (22 tests)
+# Unit tests (24 tests)
 python3 -m unittest discover -s tests
 
 # Evaluation on the hand-labelled demo slice -> results/seed_results.md (fallback)
@@ -187,9 +187,8 @@ python3 -m src.pipeline --text "kal office jana hai" --checkpoint OmarNiazi/ruen
 Face: [`OmarNiazi/ruen-lid-xlmr-base-iter1`](https://huggingface.co/OmarNiazi/ruen-lid-xlmr-base-iter1).
 It's licensed CC BY-SA 4.0, following the COMI-LINGUA training data, and its model card has the results and
 the proxy-data caveat. `--checkpoint` accepts that id (downloaded once, ~1.1 GB) or a local folder such as
-`checkpoints/ruen-lid`, which is where step 3b writes it. A local folder can also carry the Stage-3
-threshold tuned for it (`stage3.json`, §8); the Hugging Face id has none, so it uses the default τ unless
-`--tau` is given (the tuned value for this model is `--tau 0.5684722065925598`, i.e. ≈ 0.568).
+`checkpoints/ruen-lid`, which is where step 3b writes it. Both carry the Stage-3 threshold tuned for this
+model (`stage3.json`, τ ≈ 0.568, §8), which the pipeline uses unless `--tau` is given.
 
 **Proxy splits** (`scripts/prepare_comi_lingua.py`):
 - the gold label is the 2-of-3 annotator majority; words without one are labelled `IGN` (kept as context,
@@ -229,8 +228,10 @@ Implemented in `src/eval/metrics.py`:
   the rules re-check every word they can at no cost on validation. τ = 0 is always a candidate, so the
   selected τ never scores below Stage 2 alone on validation. A fine grid around the selected τ (steps of
   0.0001, `zoom.csv`) is scored as a check. The value is saved as `<checkpoint>/stage3.json` and used when no `--tau` is given
-  (precedence: `--tau` > tuned value > `DEFAULT_TAU` = 0.55, which the fallback mode keeps; a `stage3.json`
-  older than the model weights is ignored). The test split and the demo sets are scored only for reporting;
+  (precedence: `--tau` > tuned value > `DEFAULT_TAU` = 0.55, which the fallback mode keeps; a local
+  `stage3.json` older than the model weights is ignored). For a Hugging Face model id the pipeline reads the
+  `stage3.json` in its repository (needs `huggingface_hub`, installed with `transformers`); the released
+  iteration-1 model has one. After retraining, upload a new `stage3.json` together with the new weights. The test split and the demo sets are scored only for reporting;
 - categories: the demo slice carries gold categories; COMI-LINGUA has none, so its per-category report uses
   Stage 1's form-level categories, including `unknown` for words outside the seed lexicons;
 - baseline adapters (`src/eval/baselines/`): the model-free fallback, plus an off-the-shelf **MixLID**
@@ -278,8 +279,8 @@ beats Stage 2 alone on the validation split: up to that value the rules re-check
 words and change none, and one step higher the English-lexicon rule turns an Urdu *a* into English; every
 higher τ breaks more labels than it fixes. On the test split (reporting only) the selected τ re-checks 91
 words and changes one, wrongly: 0.9617 · 0.9352, the same as the old default 0.55, against 0.9618 · 0.9352
-with Stage 3 off (τ = 0). With the local checkpoint the pipeline now uses the tuned τ automatically; the table
-above is at τ = 0.55.
+with Stage 3 off (τ = 0). With the local checkpoint or the Hugging Face id the pipeline now uses the tuned τ
+automatically; the table above is at τ = 0.55.
 
 **Side experiments** ([`experiments/`](experiments/), Stage 2 alone, mean of 3 seeds on the same test split):
 - *Training for longer* ([`02_longer_training`](experiments/02_longer_training/)): with up to 15 epochs

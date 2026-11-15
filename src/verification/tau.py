@@ -9,9 +9,10 @@ that word alone, and c nudged just above, the smallest τ that re-labels it), pl
 rules re-check as many low-confidence words as they can without costing anything on validation. Stage 2 runs
 once, outside this module, so nothing here needs torch.
 
-The selected τ is saved as ``stage3.json`` next to a local checkpoint. ``resolve_tau`` is the precedence the
-pipeline and ``scripts/evaluate.py`` use: an explicit τ, else the tuned value of that checkpoint, else
-``DEFAULT_TAU``.
+The selected τ is saved as ``stage3.json`` next to a local checkpoint; a model published on the Hugging Face
+Hub carries the same file in its repository. ``resolve_tau`` is the precedence the pipeline and
+``scripts/evaluate.py`` use: an explicit τ, else the tuned value of that checkpoint (local folder or hub id),
+else ``DEFAULT_TAU``.
 """
 
 from __future__ import annotations
@@ -184,6 +185,23 @@ def config_path(checkpoint: str | None) -> Path | None:
     return folder / STAGE3_CONFIG if folder.is_dir() else None
 
 
+def hub_config_path(model_id: str) -> Path | None:
+    """The tuned τ of a Hugging Face model id: its ``stage3.json``, downloaded once into the Hugging Face cache.
+
+    Needs ``huggingface_hub``, which comes with ``transformers`` (a hub id can't be loaded without it). None when
+    it isn't installed, the repository has no such file, the id isn't on the hub, or there is no network and no
+    cached copy.
+    """
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError:
+        return None
+    try:
+        return Path(hf_hub_download(model_id, STAGE3_CONFIG))
+    except Exception:  # noqa: BLE001 (missing file, unknown or invalid id, offline: all mean "not tuned")
+        return None
+
+
 def save_tuned_tau(path: Path, record: dict) -> None:
     if not 0.0 <= record["tau"] <= 1.0:
         raise ValueError(f"tau must be in [0, 1], got {record['tau']}")
@@ -206,11 +224,22 @@ def is_stale(path: Path) -> bool:
 
 
 def resolve_tau(tau: float | None, checkpoint: str | None) -> tuple[float, str]:
-    """τ for a run, and where it came from: explicit τ > tuned value of a local checkpoint > DEFAULT_TAU."""
+    """τ for a run, and where it came from: explicit τ > tuned value of the checkpoint > DEFAULT_TAU.
+
+    The checkpoint is a local folder or a Hugging Face model id. A hub file is not checked for staleness: it
+    comes from the same repository revision as the weights.
+    """
     if tau is not None:
         return tau, "explicit"
+    if not checkpoint:
+        return DEFAULT_TAU, "default"
     path = config_path(checkpoint)
-    if path is None or not path.is_file():
+    if path is None:  # not a local folder: a Hugging Face model id
+        hub_path = hub_config_path(checkpoint)
+        if hub_path is None:
+            return DEFAULT_TAU, "default"
+        return load_tuned_tau(hub_path), f"tuned, {checkpoint}/{STAGE3_CONFIG} on the Hugging Face Hub"
+    if not path.is_file():
         return DEFAULT_TAU, "default"
     if is_stale(path):
         print(

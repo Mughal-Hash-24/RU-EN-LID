@@ -4,6 +4,7 @@ import math
 import os
 import sys
 import tempfile
+import types
 import unittest
 from collections import Counter
 from pathlib import Path
@@ -153,6 +154,27 @@ class TauPrecedenceTest(unittest.TestCase):
             os.utime(weights, (2_000_000, 2_000_000))
             with contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(resolve_tau(None, folder)[0], DEFAULT_TAU)
+
+    def test_hub_id_reads_the_tuned_value_from_the_hub(self):
+        with tempfile.TemporaryDirectory() as folder:
+            downloaded = Path(folder) / STAGE3_CONFIG
+            save_tuned_tau(downloaded, {"tau": 0.6})
+            hub = types.ModuleType("huggingface_hub")
+            hub.hf_hub_download = mock.Mock(return_value=str(downloaded))
+            with mock.patch.dict(sys.modules, {"huggingface_hub": hub}):
+                tau, source = resolve_tau(None, "someone/some-model")
+                self.assertEqual(resolve_tau(0.7, "someone/some-model"), (0.7, "explicit"))
+        self.assertEqual(tau, 0.6)
+        self.assertIn("Hugging Face", source)
+        hub.hf_hub_download.assert_called_once_with("someone/some-model", STAGE3_CONFIG)
+
+    def test_hub_id_without_a_tuned_value_uses_the_default(self):
+        hub = types.ModuleType("huggingface_hub")
+        hub.hf_hub_download = mock.Mock(side_effect=OSError("404: no stage3.json in this repository"))
+        with mock.patch.dict(sys.modules, {"huggingface_hub": hub}):
+            self.assertEqual(resolve_tau(None, "someone/some-model"), (DEFAULT_TAU, "default"))
+        with mock.patch.dict(sys.modules, {"huggingface_hub": None}):  # huggingface_hub not installed
+            self.assertEqual(resolve_tau(None, "someone/some-model"), (DEFAULT_TAU, "default"))
 
     def test_pipeline_uses_the_tuned_value_unless_tau_is_given(self):
         with tempfile.TemporaryDirectory() as folder, mock.patch("src.classifier.predict.TokenLIDPredictor"):

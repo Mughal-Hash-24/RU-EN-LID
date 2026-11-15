@@ -57,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--tau",
         type=float,
-        help=f"Stage 3 threshold (default: the value tuned for a local --checkpoint by scripts/tune_tau.py, "
+        help=f"Stage 3 threshold (default: the value tuned for --checkpoint by scripts/tune_tau.py, "
         f"else {DEFAULT_TAU}; --tau 0 = Stage 2 alone)",
     )
     parser.add_argument("--json", action="store_true")

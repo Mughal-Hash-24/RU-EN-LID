@@ -47,7 +47,7 @@ class LIDPipeline:
         checkpoint: str | None = None,
         tau: float | None = None,
     ) -> "LIDPipeline":
-        """tau=None: the value tuned for a local checkpoint (scripts/tune_tau.py), else DEFAULT_TAU."""
+        """tau=None: the value tuned for the checkpoint (its stage3.json, local or on the hub), else DEFAULT_TAU."""
         tau, source = resolve_tau(tau, checkpoint)
         expander = CandidateExpander.from_resources(resources_dir)
         predictor = None
@@ -108,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--tau",
         type=float,
-        help=f"Stage 3 threshold (default: the value tuned for a local --checkpoint, else {DEFAULT_TAU})",
+        help=f"Stage 3 threshold (default: the value tuned for --checkpoint, else {DEFAULT_TAU})",
     )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
