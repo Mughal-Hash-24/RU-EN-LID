@@ -1,0 +1,8 @@
+== valid
+  tau 0 (Stage 2 alone):        acc 0.9662 f1 0.9456 err 333 | deferred 0 fixes 0 breaks 0 | amb 0.9293 unk 0.9214 | rules {}
+  tau 0.562, penalty 0 (tuned):  acc 0.9661 f1 0.9455 err 334 | deferred 77 fixes 0 breaks 1 | amb 0.9293 unk 0.9214 | rules {'english-lexicon-prior': {'changed': 1, 'fixed': 0, 'broke': 1}}
+  tau 0.7, penalty 0.5 (grid):   acc 0.9669 f1 0.9461 err 326 | deferred 239 fixes 18 breaks 11 | amb 0.9371 unk 0.9235 | rules {'context': {'changed': 32, 'fixed': 18, 'broke': 9}, 'english-lexicon-prior': {'changed': 1, 'fixed': 0, 'broke': 1}, 'urdu-lexicon-prior': {'changed': 1, 'fixed': 0, 'broke': 1}}
+== test
+  tau 0 (Stage 2 alone):        acc 0.9651 f1 0.9405 err 531 | deferred 0 fixes 0 breaks 0 | amb 0.8981 unk 0.9292 | rules {}
+  tau 0.562, penalty 0 (tuned):  acc 0.9651 f1 0.9405 err 530 | deferred 163 fixes 2 breaks 1 | amb 0.8981 unk 0.9292 | rules {'urdu-lexicon-prior': {'changed': 3, 'fixed': 2, 'broke': 1}}
+  tau 0.7, penalty 0.5 (grid):   acc 0.9636 f1 0.9381 err 554 | deferred 425 fixes 13 breaks 36 | amb 0.8952 unk 0.9235 | rules {'context': {'changed': 44, 'fixed': 9, 'broke': 32}, 'english-lexicon-prior': {'changed': 4, 'fixed': 2, 'broke': 2}, 'urdu-lexicon-prior': {'changed': 4, 'fixed': 2, 'broke': 2}}

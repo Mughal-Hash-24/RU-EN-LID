@@ -1,0 +1,348 @@
+{
+  "best": {
+    "tau": 0.7,
+    "penalty": 0.5,
+    "final_accuracy": 0.9669,
+    "coverage": 0.9757,
+    "fixes": 18,
+    "breaks": 11
+  },
+  "grid": [
+    {
+      "tau": 0.0,
+      "penalty": 0.0,
+      "final_accuracy": 0.9662,
+      "coverage": 1.0,
+      "fixes": 0,
+      "breaks": 0
+    },
+    {
+      "tau": 0.0,
+      "penalty": 0.25,
+      "final_accuracy": 0.9662,
+      "coverage": 1.0,
+      "fixes": 0,
+      "breaks": 0
+    },
+    {
+      "tau": 0.0,
+      "penalty": 0.5,
+      "final_accuracy": 0.9662,
+      "coverage": 1.0,
+      "fixes": 0,
+      "breaks": 0
+    },
+    {
+      "tau": 0.0,
+      "penalty": 1.0,
+      "final_accuracy": 0.9662,
+      "coverage": 1.0,
+      "fixes": 0,
+      "breaks": 0
+    },
+    {
+      "tau": 0.0,
+      "penalty": 2.0,
+      "final_accuracy": 0.9662,
+      "coverage": 1.0,
+      "fixes": 0,
+      "breaks": 0
+    },
+    {
+      "tau": 0.0,
+      "penalty": 4.0,
+      "final_accuracy": 0.9662,
+      "coverage": 1.0,
+      "fixes": 0,
+      "breaks": 0
+    },
+    {
+      "tau": 0.561734676361084,
+      "penalty": 0.0,
+      "final_accuracy": 0.9661,
+      "coverage": 0.9922,
+      "fixes": 0,
+      "breaks": 1
+    },
+    {
+      "tau": 0.561734676361084,
+      "penalty": 0.25,
+      "final_accuracy": 0.966,
+      "coverage": 0.9922,
+      "fixes": 5,
+      "breaks": 7
+    },
+    {
+      "tau": 0.561734676361084,
+      "penalty": 0.5,
+      "final_accuracy": 0.9665,
+      "coverage": 0.9922,
+      "fixes": 10,
+      "breaks": 7
+    },
+    {
+      "tau": 0.561734676361084,
+      "penalty": 1.0,
+      "final_accuracy": 0.9665,
+      "coverage": 0.9922,
+      "fixes": 10,
+      "breaks": 7
+    },
+    {
+      "tau": 0.561734676361084,
+      "penalty": 2.0,
+      "final_accuracy": 0.9665,
+      "coverage": 0.9922,
+      "fixes": 10,
+      "breaks": 7
+    },
+    {
+      "tau": 0.561734676361084,
+      "penalty": 4.0,
+      "final_accuracy": 0.9665,
+      "coverage": 0.9922,
+      "fixes": 10,
+      "breaks": 7
+    },
+    {
+      "tau": 0.6,
+      "penalty": 0.0,
+      "final_accuracy": 0.9661,
+      "coverage": 0.9881,
+      "fixes": 0,
+      "breaks": 1
+    },
+    {
+      "tau": 0.6,
+      "penalty": 0.25,
+      "final_accuracy": 0.9661,
+      "coverage": 0.9881,
+      "fixes": 7,
+      "breaks": 8
+    },
+    {
+      "tau": 0.6,
+      "penalty": 0.5,
+      "final_accuracy": 0.9668,
+      "coverage": 0.9881,
+      "fixes": 14,
+      "breaks": 8
+    },
+    {
+      "tau": 0.6,
+      "penalty": 1.0,
+      "final_accuracy": 0.9668,
+      "coverage": 0.9881,
+      "fixes": 14,
+      "breaks": 8
+    },
+    {
+      "tau": 0.6,
+      "penalty": 2.0,
+      "final_accuracy": 0.9668,
+      "coverage": 0.9881,
+      "fixes": 14,
+      "breaks": 8
+    },
+    {
+      "tau": 0.6,
+      "penalty": 4.0,
+      "final_accuracy": 0.9668,
+      "coverage": 0.9881,
+      "fixes": 14,
+      "breaks": 8
+    },
+    {
+      "tau": 0.7,
+      "penalty": 0.0,
+      "final_accuracy": 0.966,
+      "coverage": 0.9757,
+      "fixes": 0,
+      "breaks": 2
+    },
+    {
+      "tau": 0.7,
+      "penalty": 0.25,
+      "final_accuracy": 0.966,
+      "coverage": 0.9757,
+      "fixes": 7,
+      "breaks": 9
+    },
+    {
+      "tau": 0.7,
+      "penalty": 0.5,
+      "final_accuracy": 0.9669,
+      "coverage": 0.9757,
+      "fixes": 18,
+      "breaks": 11
+    },
+    {
+      "tau": 0.7,
+      "penalty": 1.0,
+      "final_accuracy": 0.9664,
+      "coverage": 0.9757,
+      "fixes": 18,
+      "breaks": 16
+    },
+    {
+      "tau": 0.7,
+      "penalty": 2.0,
+      "final_accuracy": 0.9664,
+      "coverage": 0.9757,
+      "fixes": 19,
+      "breaks": 17
+    },
+    {
+      "tau": 0.7,
+      "penalty": 4.0,
+      "final_accuracy": 0.9664,
+      "coverage": 0.9757,
+      "fixes": 19,
+      "breaks": 17
+    },
+    {
+      "tau": 0.8,
+      "penalty": 0.0,
+      "final_accuracy": 0.9656,
+      "coverage": 0.9605,
+      "fixes": 0,
+      "breaks": 6
+    },
+    {
+      "tau": 0.8,
+      "penalty": 0.25,
+      "final_accuracy": 0.9656,
+      "coverage": 0.9605,
+      "fixes": 7,
+      "breaks": 13
+    },
+    {
+      "tau": 0.8,
+      "penalty": 0.5,
+      "final_accuracy": 0.9664,
+      "coverage": 0.9605,
+      "fixes": 18,
+      "breaks": 16
+    },
+    {
+      "tau": 0.8,
+      "penalty": 1.0,
+      "final_accuracy": 0.9654,
+      "coverage": 0.9605,
+      "fixes": 21,
+      "breaks": 29
+    },
+    {
+      "tau": 0.8,
+      "penalty": 2.0,
+      "final_accuracy": 0.965,
+      "coverage": 0.9605,
+      "fixes": 23,
+      "breaks": 35
+    },
+    {
+      "tau": 0.8,
+      "penalty": 4.0,
+      "final_accuracy": 0.965,
+      "coverage": 0.9605,
+      "fixes": 23,
+      "breaks": 35
+    },
+    {
+      "tau": 0.9,
+      "penalty": 0.0,
+      "final_accuracy": 0.9655,
+      "coverage": 0.9318,
+      "fixes": 0,
+      "breaks": 7
+    },
+    {
+      "tau": 0.9,
+      "penalty": 0.25,
+      "final_accuracy": 0.9655,
+      "coverage": 0.9318,
+      "fixes": 7,
+      "breaks": 14
+    },
+    {
+      "tau": 0.9,
+      "penalty": 0.5,
+      "final_accuracy": 0.9663,
+      "coverage": 0.9318,
+      "fixes": 18,
+      "breaks": 17
+    },
+    {
+      "tau": 0.9,
+      "penalty": 1.0,
+      "final_accuracy": 0.9649,
+      "coverage": 0.9318,
+      "fixes": 25,
+      "breaks": 38
+    },
+    {
+      "tau": 0.9,
+      "penalty": 2.0,
+      "final_accuracy": 0.9631,
+      "coverage": 0.9318,
+      "fixes": 28,
+      "breaks": 58
+    },
+    {
+      "tau": 0.9,
+      "penalty": 4.0,
+      "final_accuracy": 0.9629,
+      "coverage": 0.9318,
+      "fixes": 30,
+      "breaks": 62
+    },
+    {
+      "tau": 0.95,
+      "penalty": 0.0,
+      "final_accuracy": 0.9654,
+      "coverage": 0.8871,
+      "fixes": 1,
+      "breaks": 9
+    },
+    {
+      "tau": 0.95,
+      "penalty": 0.25,
+      "final_accuracy": 0.9654,
+      "coverage": 0.8871,
+      "fixes": 8,
+      "breaks": 16
+    },
+    {
+      "tau": 0.95,
+      "penalty": 0.5,
+      "final_accuracy": 0.9662,
+      "coverage": 0.8871,
+      "fixes": 19,
+      "breaks": 19
+    },
+    {
+      "tau": 0.95,
+      "penalty": 1.0,
+      "final_accuracy": 0.9648,
+      "coverage": 0.8871,
+      "fixes": 26,
+      "breaks": 40
+    },
+    {
+      "tau": 0.95,
+      "penalty": 2.0,
+      "final_accuracy": 0.961,
+      "coverage": 0.8871,
+      "fixes": 32,
+      "breaks": 83
+    },
+    {
+      "tau": 0.95,
+      "penalty": 4.0,
+      "final_accuracy": 0.9598,
+      "coverage": 0.8871,
+      "fixes": 35,
+      "breaks": 98
+    }
+  ]
+}

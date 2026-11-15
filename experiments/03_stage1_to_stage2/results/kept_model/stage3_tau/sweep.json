@@ -1,0 +1,1997 @@
+{
+  "checkpoint": "checkpoints/ruen-lid-tag",
+  "device": "cuda",
+  "date": "2026-11-16",
+  "selection": "validation macro-F1, then accuracy; among the tau values that tie on them, the largest one before the score first drops (the rules re-check every word they can at no cost on validation)",
+  "candidates": {
+    "count": 219,
+    "change_points": 59,
+    "grid": 0.01,
+    "change_point_values": [
+      0.561734676361084,
+      0.6670103669166565,
+      0.724059522151947,
+      0.7289323210716248,
+      0.7541486620903015,
+      0.7602875232696533,
+      0.8997592926025391,
+      0.901056706905365,
+      0.9057551622390747,
+      0.9209252595901489,
+      0.9473652839660645,
+      0.9529977440834045,
+      0.9615505337715149,
+      0.9686448574066162,
+      0.977332353591919,
+      0.9774265289306641,
+      0.9790661931037903,
+      0.983336865901947,
+      0.9849694967269897,
+      0.9849997758865356,
+      0.9850137829780579,
+      0.9852944612503052,
+      0.9857168197631836,
+      0.987145185470581,
+      0.9871588945388794,
+      0.9878546595573425,
+      0.9885802865028381,
+      0.9892392158508301,
+      0.9892836809158325,
+      0.9892987012863159,
+      0.9912905693054199,
+      0.9913936257362366,
+      0.9915637969970703,
+      0.9919117093086243,
+      0.9919517040252686,
+      0.9921667575836182,
+      0.9925655126571655,
+      0.9927033185958862,
+      0.9927512407302856,
+      0.9928404092788696,
+      0.9929252862930298,
+      0.9931067824363708,
+      0.9931174516677856,
+      0.9931991696357727,
+      0.9932529330253601,
+      0.9932599663734436,
+      0.993301272392273,
+      0.9933868050575256,
+      0.9934810400009155,
+      0.9937484264373779,
+      0.9939914345741272,
+      0.994053304195404,
+      0.994335949420929,
+      0.9944361448287964,
+      0.9947766065597534,
+      0.9949886202812195,
+      0.9950342178344727,
+      0.9950599074363708,
+      0.9951569437980652
+    ]
+  },
+  "selected": {
+    "tau": 0.561734676361084,
+    "tokens": 9848,
+    "accuracy": 0.9661860276198213,
+    "macro_f1": 0.9456133953989198,
+    "below_tau": 76,
+    "fired": 0,
+    "fixed": 0,
+    "broke": 0,
+    "by_rule": {}
+  },
+  "valid": {
+    "file": "data/cache/comi-lingua-lid/roman/valid.csv",
+    "sentences": 727,
+    "sweep": [
+      {
+        "tau": 0.0,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.05,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.1,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.15,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.2,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.25,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.3,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.35,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.4,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 5,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.45,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 8,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.5,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 33,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.55,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 68,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.561734676361084,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 76,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.5617346763610841,
+        "tokens": 9848,
+        "accuracy": 0.9660844841592201,
+        "macro_f1": 0.9455140548812079,
+        "below_tau": 77,
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 1,
+            "fixed": 0,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.6,
+        "tokens": 9848,
+        "accuracy": 0.9660844841592201,
+        "macro_f1": 0.9455140548812079,
+        "below_tau": 117,
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 1,
+            "fixed": 0,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.65,
+        "tokens": 9848,
+        "accuracy": 0.9660844841592201,
+        "macro_f1": 0.9455140548812079,
+        "below_tau": 172,
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 1,
+            "fixed": 0,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.7,
+        "tokens": 9848,
+        "accuracy": 0.965982940698619,
+        "macro_f1": 0.9454082862659491,
+        "below_tau": 239,
+        "fired": 2,
+        "fixed": 0,
+        "broke": 2,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 1,
+            "fixed": 0,
+            "broke": 1
+          },
+          "urdu-lexicon-prior": {
+            "fired": 1,
+            "fixed": 0,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.75,
+        "tokens": 9848,
+        "accuracy": 0.9657798537774167,
+        "macro_f1": 0.9452031771329782,
+        "below_tau": 301,
+        "fired": 4,
+        "fixed": 0,
+        "broke": 4,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          },
+          "urdu-lexicon-prior": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.8,
+        "tokens": 9848,
+        "accuracy": 0.9655767668562144,
+        "macro_f1": 0.9450046502630197,
+        "below_tau": 389,
+        "fired": 6,
+        "fixed": 0,
+        "broke": 6,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 0,
+            "broke": 4
+          },
+          "urdu-lexicon-prior": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.85,
+        "tokens": 9848,
+        "accuracy": 0.9655767668562144,
+        "macro_f1": 0.9450046502630197,
+        "below_tau": 503,
+        "fired": 6,
+        "fixed": 0,
+        "broke": 6,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 0,
+            "broke": 4
+          },
+          "urdu-lexicon-prior": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.9,
+        "tokens": 9848,
+        "accuracy": 0.9654752233956133,
+        "macro_f1": 0.9449054309121642,
+        "below_tau": 672,
+        "fired": 7,
+        "fixed": 0,
+        "broke": 7,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 5,
+            "fixed": 0,
+            "broke": 5
+          },
+          "urdu-lexicon-prior": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.95,
+        "tokens": 9848,
+        "accuracy": 0.9653736799350122,
+        "macro_f1": 0.9448601610086507,
+        "below_tau": 1112,
+        "fired": 11,
+        "fixed": 1,
+        "broke": 9,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 8,
+            "fixed": 1,
+            "broke": 7
+          },
+          "urdu-lexicon-prior": {
+            "fired": 3,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 1.0,
+        "tokens": 9848,
+        "accuracy": 0.9604995938261576,
+        "macro_f1": 0.9400853932987957,
+        "below_tau": 9848,
+        "fired": 59,
+        "fixed": 1,
+        "broke": 57,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 50,
+            "fixed": 1,
+            "broke": 49
+          },
+          "urdu-lexicon-prior": {
+            "fired": 7,
+            "fixed": 0,
+            "broke": 6
+          },
+          "variant-consistency": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      }
+    ],
+    "just_above_selected": {
+      "tau": 0.5617346763610841,
+      "tokens": 9848,
+      "accuracy": 0.9660844841592201,
+      "macro_f1": 0.9455140548812079,
+      "below_tau": 77,
+      "fired": 1,
+      "fixed": 0,
+      "broke": 1,
+      "by_rule": {
+        "english-lexicon-prior": {
+          "fired": 1,
+          "fixed": 0,
+          "broke": 1
+        }
+      }
+    },
+    "forms_at_tau_1": [
+      {
+        "rule": "english-lexicon-prior",
+        "form": "me",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 41,
+        "fixed": 0,
+        "broke": 41,
+        "gold": {
+          "UR": 41
+        },
+        "confidences": [
+          0.7289,
+          0.7603,
+          0.953,
+          0.9773,
+          0.9833,
+          0.985,
+          0.985,
+          0.9853,
+          0.9857,
+          0.9871,
+          0.9872,
+          0.9886,
+          0.9892,
+          0.9893,
+          0.9893,
+          0.9913,
+          0.9916,
+          0.9919,
+          0.992,
+          0.9922,
+          0.9926,
+          0.9927,
+          0.9928,
+          0.9928,
+          0.9929,
+          0.9931,
+          0.9931,
+          0.9932,
+          0.9933,
+          0.9933,
+          0.9934,
+          0.9935,
+          0.9937,
+          0.994,
+          0.9941,
+          0.9943,
+          0.9944,
+          0.9948,
+          0.995,
+          0.9951,
+          0.9952
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "be",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 3,
+        "fixed": 0,
+        "broke": 3,
+        "gold": {
+          "UR": 3
+        },
+        "confidences": [
+          0.8998,
+          0.9474,
+          0.9914
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "a",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 2,
+        "fixed": 0,
+        "broke": 2,
+        "gold": {
+          "UR": 2
+        },
+        "confidences": [
+          0.9058,
+          0.9686
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "in",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 2,
+        "fixed": 0,
+        "broke": 2,
+        "gold": {
+          "UR": 2
+        },
+        "confidences": [
+          0.7541,
+          0.9791
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "kabita",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 1,
+        "fixed": 1,
+        "broke": 0,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.9209
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "too",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "UR": 1
+        },
+        "confidences": [
+          0.5617
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "modi",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 2,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "OTH": 1,
+          "EN": 1
+        },
+        "confidences": [
+          0.9011,
+          0.9774
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "ma",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.9616
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "prasad",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.7241
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "ravi",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.667
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "tune",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.995
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "ya",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.985
+        ]
+      },
+      {
+        "rule": "variant-consistency",
+        "form": "he",
+        "category": "both",
+        "change": "EN->UR",
+        "fired": 2,
+        "fixed": 0,
+        "broke": 2,
+        "gold": {
+          "EN": 2
+        },
+        "confidences": [
+          0.9879,
+          0.9933
+        ]
+      }
+    ],
+    "calibration": {
+      "words": 9848,
+      "mean_confidence": 0.9696728997295654,
+      "accuracy": 0.9661860276198213,
+      "ece": 0.007189919550204839,
+      "bands": [
+        {
+          "band": [
+            0.0,
+            0.5
+          ],
+          "words": 33,
+          "mean_confidence": 0.4606326466256922,
+          "accuracy": 0.2727272727272727
+        },
+        {
+          "band": [
+            0.5,
+            0.55
+          ],
+          "words": 35,
+          "mean_confidence": 0.5266118696757726,
+          "accuracy": 0.5714285714285714
+        },
+        {
+          "band": [
+            0.55,
+            0.75
+          ],
+          "words": 233,
+          "mean_confidence": 0.6569448532976306,
+          "accuracy": 0.6866952789699571
+        },
+        {
+          "band": [
+            0.75,
+            0.9
+          ],
+          "words": 371,
+          "mean_confidence": 0.8379160450153916,
+          "accuracy": 0.738544474393531
+        },
+        {
+          "band": [
+            0.9,
+            0.99
+          ],
+          "words": 3427,
+          "mean_confidence": 0.9738695046315222,
+          "accuracy": 0.9684855558797782
+        },
+        {
+          "band": [
+            0.99,
+            1.0
+          ],
+          "words": 5749,
+          "mean_confidence": 0.9939677557606845,
+          "accuracy": 0.997216907288224
+        }
+      ]
+    }
+  },
+  "test": {
+    "file": "data/cache/comi-lingua-lid/roman/test.csv",
+    "sentences": 750,
+    "note": "reporting only: never used to select tau",
+    "at_selected": {
+      "tau": 0.561734676361084,
+      "tokens": 15207,
+      "accuracy": 0.965147629381206,
+      "macro_f1": 0.9405262297454966,
+      "below_tau": 163,
+      "fired": 3,
+      "fixed": 2,
+      "broke": 1,
+      "by_rule": {
+        "urdu-lexicon-prior": {
+          "fired": 3,
+          "fixed": 2,
+          "broke": 1
+        }
+      }
+    },
+    "change_point_values": [
+      0.39375653862953186,
+      0.4029249846935272,
+      0.5146069526672363,
+      0.5818971991539001,
+      0.5932157039642334,
+      0.640810489654541,
+      0.6585536003112793,
+      0.6751356720924377,
+      0.7654077410697937,
+      0.7977564930915833,
+      0.8356761336326599,
+      0.9226124286651611,
+      0.9305347800254822,
+      0.9310342073440552,
+      0.9410717487335205,
+      0.9494830965995789,
+      0.9659738540649414,
+      0.9662947058677673,
+      0.9681185483932495,
+      0.9697297215461731,
+      0.9697464108467102,
+      0.9733282327651978,
+      0.9766846895217896,
+      0.9779350757598877,
+      0.9789230823516846,
+      0.9811580777168274,
+      0.9820522665977478,
+      0.982155978679657,
+      0.9834083318710327,
+      0.9839929938316345,
+      0.9844675660133362,
+      0.9846214056015015,
+      0.9859527349472046,
+      0.9860516786575317,
+      0.9878935217857361,
+      0.9883253574371338,
+      0.9884945750236511,
+      0.9885441660881042,
+      0.988679826259613,
+      0.9888890981674194,
+      0.9889670014381409,
+      0.9893339276313782,
+      0.9896275997161865,
+      0.9896935820579529,
+      0.9897128343582153,
+      0.989861011505127,
+      0.9900615215301514,
+      0.9901414513587952,
+      0.9901670217514038,
+      0.9906359314918518,
+      0.9906764030456543,
+      0.9908040761947632,
+      0.9909014701843262,
+      0.9910609126091003,
+      0.9911035299301147,
+      0.9912034273147583,
+      0.991288423538208,
+      0.9913697242736816,
+      0.9915167093276978,
+      0.9916063547134399,
+      0.9916228652000427,
+      0.9918671250343323,
+      0.9920690059661865,
+      0.9921058416366577,
+      0.992141842842102,
+      0.9921596646308899,
+      0.9923449158668518,
+      0.9924787282943726,
+      0.9926430583000183,
+      0.9927598237991333,
+      0.9928169250488281,
+      0.9928252696990967,
+      0.9929185509681702,
+      0.992926299571991,
+      0.9929307699203491,
+      0.9930358529090881,
+      0.9930821061134338,
+      0.9932625889778137,
+      0.9933114051818848,
+      0.9934741854667664,
+      0.9935576319694519,
+      0.9935890436172485,
+      0.993693470954895,
+      0.9936995506286621,
+      0.9937817454338074,
+      0.9938954710960388,
+      0.9939485788345337,
+      0.99397212266922,
+      0.9940060377120972,
+      0.9940144419670105,
+      0.994076132774353,
+      0.9941486120223999,
+      0.9941965341567993,
+      0.9942686557769775,
+      0.9942848086357117,
+      0.9942904710769653,
+      0.9943168759346008,
+      0.9943447113037109,
+      0.9943479895591736,
+      0.9943547248840332,
+      0.9944697618484497,
+      0.9944843649864197,
+      0.9945076107978821,
+      0.9945553541183472,
+      0.9946070313453674,
+      0.9946223497390747,
+      0.9946527481079102,
+      0.9946568012237549,
+      0.9947227239608765,
+      0.9947707056999207,
+      0.9948988556861877,
+      0.9949042797088623,
+      0.9949169158935547,
+      0.994936466217041,
+      0.9949722290039062,
+      0.9950085878372192,
+      0.9951086640357971,
+      0.9953792095184326,
+      0.995743453502655
+    ],
+    "sweep": [
+      {
+        "tau": 0.0,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.05,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.1,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.15,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.2,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.25,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.3,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.35,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      {
+        "tau": 0.4,
+        "tokens": 15207,
+        "accuracy": 0.965147629381206,
+        "macro_f1": 0.9405301064273698,
+        "below_tau": 9,
+        "fired": 1,
+        "fixed": 1,
+        "broke": 0,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 1,
+            "fixed": 1,
+            "broke": 0
+          }
+        }
+      },
+      {
+        "tau": 0.45,
+        "tokens": 15207,
+        "accuracy": 0.9652133885710528,
+        "macro_f1": 0.9405922412571383,
+        "below_tau": 21,
+        "fired": 2,
+        "fixed": 2,
+        "broke": 0,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 2,
+            "fixed": 2,
+            "broke": 0
+          }
+        }
+      },
+      {
+        "tau": 0.5,
+        "tokens": 15207,
+        "accuracy": 0.9652133885710528,
+        "macro_f1": 0.9405922412571383,
+        "below_tau": 58,
+        "fired": 2,
+        "fixed": 2,
+        "broke": 0,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 2,
+            "fixed": 2,
+            "broke": 0
+          }
+        }
+      },
+      {
+        "tau": 0.55,
+        "tokens": 15207,
+        "accuracy": 0.965147629381206,
+        "macro_f1": 0.9405262297454966,
+        "below_tau": 146,
+        "fired": 3,
+        "fixed": 2,
+        "broke": 1,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 3,
+            "fixed": 2,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.561734676361084,
+        "tokens": 15207,
+        "accuracy": 0.965147629381206,
+        "macro_f1": 0.9405262297454966,
+        "below_tau": 163,
+        "fired": 3,
+        "fixed": 2,
+        "broke": 1,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 3,
+            "fixed": 2,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.5617346763610841,
+        "tokens": 15207,
+        "accuracy": 0.965147629381206,
+        "macro_f1": 0.9405262297454966,
+        "below_tau": 163,
+        "fired": 3,
+        "fixed": 2,
+        "broke": 1,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 3,
+            "fixed": 2,
+            "broke": 1
+          }
+        }
+      },
+      {
+        "tau": 0.6,
+        "tokens": 15207,
+        "accuracy": 0.965147629381206,
+        "macro_f1": 0.9405262297454966,
+        "below_tau": 234,
+        "fired": 5,
+        "fixed": 3,
+        "broke": 2,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 1,
+            "fixed": 1,
+            "broke": 0
+          },
+          "urdu-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.65,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.9404640955741453,
+        "below_tau": 317,
+        "fired": 6,
+        "fixed": 3,
+        "broke": 3,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 2,
+            "fixed": 1,
+            "broke": 1
+          },
+          "urdu-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.7,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 425,
+        "fired": 8,
+        "fixed": 4,
+        "broke": 4,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          },
+          "urdu-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.75,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 539,
+        "fired": 8,
+        "fixed": 4,
+        "broke": 4,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          },
+          "urdu-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          }
+        }
+      },
+      {
+        "tau": 0.8,
+        "tokens": 15207,
+        "accuracy": 0.9649503518116657,
+        "macro_f1": 0.9403359498911525,
+        "below_tau": 684,
+        "fired": 10,
+        "fixed": 4,
+        "broke": 6,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          },
+          "urdu-lexicon-prior": {
+            "fired": 6,
+            "fixed": 2,
+            "broke": 4
+          }
+        }
+      },
+      {
+        "tau": 0.85,
+        "tokens": 15207,
+        "accuracy": 0.9650161110015124,
+        "macro_f1": 0.9403980722926303,
+        "below_tau": 892,
+        "fired": 11,
+        "fixed": 5,
+        "broke": 6,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          },
+          "urdu-lexicon-prior": {
+            "fired": 6,
+            "fixed": 2,
+            "broke": 4
+          },
+          "variant-consistency": {
+            "fired": 1,
+            "fixed": 1,
+            "broke": 0
+          }
+        }
+      },
+      {
+        "tau": 0.9,
+        "tokens": 15207,
+        "accuracy": 0.9650161110015124,
+        "macro_f1": 0.9403980722926303,
+        "below_tau": 1212,
+        "fired": 11,
+        "fixed": 5,
+        "broke": 6,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          },
+          "urdu-lexicon-prior": {
+            "fired": 6,
+            "fixed": 2,
+            "broke": 4
+          },
+          "variant-consistency": {
+            "fired": 1,
+            "fixed": 1,
+            "broke": 0
+          }
+        }
+      },
+      {
+        "tau": 0.95,
+        "tokens": 15207,
+        "accuracy": 0.9646873150522786,
+        "macro_f1": 0.940083616237712,
+        "below_tau": 1973,
+        "fired": 16,
+        "fixed": 5,
+        "broke": 11,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 8,
+            "fixed": 2,
+            "broke": 6
+          },
+          "urdu-lexicon-prior": {
+            "fired": 7,
+            "fixed": 2,
+            "broke": 5
+          },
+          "variant-consistency": {
+            "fired": 1,
+            "fixed": 1,
+            "broke": 0
+          }
+        }
+      },
+      {
+        "tau": 1.0,
+        "tokens": 15207,
+        "accuracy": 0.9581113960676004,
+        "macro_f1": 0.9338900284543813,
+        "below_tau": 15207,
+        "fired": 120,
+        "fixed": 7,
+        "broke": 113,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 102,
+            "fixed": 3,
+            "broke": 99
+          },
+          "urdu-lexicon-prior": {
+            "fired": 8,
+            "fixed": 3,
+            "broke": 5
+          },
+          "variant-consistency": {
+            "fired": 10,
+            "fixed": 1,
+            "broke": 9
+          }
+        }
+      }
+    ],
+    "hindsight_best": {
+      "tau": 0.5146069526672363,
+      "tokens": 15207,
+      "accuracy": 0.9652133885710528,
+      "macro_f1": 0.9405922412571383,
+      "below_tau": 80,
+      "fired": 2,
+      "fixed": 2,
+      "broke": 0,
+      "by_rule": {
+        "urdu-lexicon-prior": {
+          "fired": 2,
+          "fixed": 2,
+          "broke": 0
+        }
+      }
+    },
+    "forms_at_tau_1": [
+      {
+        "rule": "english-lexicon-prior",
+        "form": "me",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 99,
+        "fixed": 2,
+        "broke": 97,
+        "gold": {
+          "UR": 97,
+          "EN": 2
+        },
+        "confidences": [
+          0.5932,
+          0.6751,
+          0.9226,
+          0.931,
+          0.9411,
+          0.9495,
+          0.966,
+          0.9681,
+          0.9697,
+          0.9697,
+          0.9733,
+          0.9779,
+          0.9789,
+          0.9822,
+          0.984,
+          0.9845,
+          0.9861,
+          0.9883,
+          0.9885,
+          0.9885,
+          0.9887,
+          0.9889,
+          0.989,
+          0.9896,
+          0.9897,
+          0.9899,
+          0.9901,
+          0.9901,
+          0.9902,
+          0.9906,
+          0.9907,
+          0.9908,
+          0.9909,
+          0.9911,
+          0.9912,
+          0.9913,
+          0.9914,
+          0.9915,
+          0.9916,
+          0.9916,
+          0.9919,
+          0.9921,
+          0.9921,
+          0.9921,
+          0.9921,
+          0.9922,
+          0.9923,
+          0.9925,
+          0.9926,
+          0.9928,
+          0.9928,
+          0.9928,
+          0.9929,
+          0.9929,
+          0.9929,
+          0.993,
+          0.9931,
+          0.9933,
+          0.9933,
+          0.9935,
+          0.9936,
+          0.9936,
+          0.9937,
+          0.9937,
+          0.9938,
+          0.9939,
+          0.9939,
+          0.994,
+          0.994,
+          0.994,
+          0.9941,
+          0.9941,
+          0.9942,
+          0.9943,
+          0.9943,
+          0.9943,
+          0.9943,
+          0.9943,
+          0.9943,
+          0.9944,
+          0.9945,
+          0.9945,
+          0.9945,
+          0.9946,
+          0.9946,
+          0.9946,
+          0.9947,
+          0.9947,
+          0.9947,
+          0.9948,
+          0.9949,
+          0.9949,
+          0.9949,
+          0.9949,
+          0.995,
+          0.995,
+          0.9951,
+          0.9954,
+          0.9957
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "a",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "UR": 1
+        },
+        "confidences": [
+          0.9911
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "in",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 1,
+        "fixed": 1,
+        "broke": 0,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.6586
+        ]
+      },
+      {
+        "rule": "english-lexicon-prior",
+        "form": "may",
+        "category": "standard",
+        "change": "UR->EN",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "UR": 1
+        },
+        "confidences": [
+          0.6408
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "japan",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 2,
+        "fixed": 2,
+        "broke": 0,
+        "gold": {
+          "UR": 2
+        },
+        "confidences": [
+          0.3938,
+          0.4029
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "modi",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 2,
+        "fixed": 0,
+        "broke": 2,
+        "gold": {
+          "EN": 2
+        },
+        "confidences": [
+          0.5146,
+          0.7654
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "aap",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.9305
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "bhopal",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.7978
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "modiji",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "gold": {
+          "EN": 1
+        },
+        "confidences": [
+          0.5819
+        ]
+      },
+      {
+        "rule": "urdu-lexicon-prior",
+        "form": "shiv",
+        "category": "standard",
+        "change": "EN->UR",
+        "fired": 1,
+        "fixed": 1,
+        "broke": 0,
+        "gold": {
+          "UR": 1
+        },
+        "confidences": [
+          0.9663
+        ]
+      },
+      {
+        "rule": "variant-consistency",
+        "form": "he",
+        "category": "both",
+        "change": "EN->UR",
+        "fired": 10,
+        "fixed": 1,
+        "broke": 9,
+        "gold": {
+          "UR": 1,
+          "EN": 9
+        },
+        "confidences": [
+          0.8357,
+          0.9767,
+          0.9812,
+          0.9821,
+          0.9834,
+          0.9846,
+          0.986,
+          0.9879,
+          0.9893,
+          0.9897
+        ]
+      }
+    ],
+    "calibration": {
+      "words": 15207,
+      "mean_confidence": 0.9657658070900066,
+      "accuracy": 0.9650818701913593,
+      "ece": 0.004780405008041107,
+      "bands": [
+        {
+          "band": [
+            0.0,
+            0.5
+          ],
+          "words": 58,
+          "mean_confidence": 0.4506656275740985,
+          "accuracy": 0.5344827586206896
+        },
+        {
+          "band": [
+            0.5,
+            0.55
+          ],
+          "words": 88,
+          "mean_confidence": 0.527134775438092,
+          "accuracy": 0.5227272727272727
+        },
+        {
+          "band": [
+            0.55,
+            0.75
+          ],
+          "words": 393,
+          "mean_confidence": 0.6577193732480057,
+          "accuracy": 0.6335877862595419
+        },
+        {
+          "band": [
+            0.75,
+            0.9
+          ],
+          "words": 673,
+          "mean_confidence": 0.8397668608938957,
+          "accuracy": 0.8068350668647846
+        },
+        {
+          "band": [
+            0.9,
+            0.99
+          ],
+          "words": 5822,
+          "mean_confidence": 0.9733080321859552,
+          "accuracy": 0.9723462727585023
+        },
+        {
+          "band": [
+            0.99,
+            1.0
+          ],
+          "words": 8173,
+          "mean_confidence": 0.9939591321822087,
+          "accuracy": 0.9966964394959011
+        }
+      ]
+    }
+  },
+  "zoom": {
+    "step": 0.0001,
+    "width": 0.05,
+    "valid": {
+      "taus": 1003,
+      "from": 0.5117346764,
+      "to": 0.6117346764,
+      "same_score_up_to_selected": true,
+      "first_change_above": {
+        "tau": 0.5617346763610841,
+        "tokens": 9848,
+        "accuracy": 0.9660844841592201,
+        "macro_f1": 0.9455140548812079,
+        "below_tau": 77,
+        "fired": 1,
+        "fixed": 0,
+        "broke": 1,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 1,
+            "fixed": 0,
+            "broke": 1
+          }
+        }
+      }
+    },
+    "test": {
+      "taus": 1003,
+      "from": 0.5117346764,
+      "to": 0.6117346764,
+      "same_score_up_to_selected": false,
+      "first_change_above": {
+        "tau": 0.5819346764,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.940460205803305,
+        "below_tau": 199,
+        "fired": 4,
+        "fixed": 2,
+        "broke": 2,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          }
+        }
+      }
+    }
+  },
+  "per_rule": [
+    {
+      "rule": "variant-consistency",
+      "valid_at_tau_1": {
+        "tau": 1.0,
+        "tokens": 9848,
+        "accuracy": 0.965982940698619,
+        "macro_f1": 0.9454018217210387,
+        "below_tau": 9848,
+        "fired": 2,
+        "fixed": 0,
+        "broke": 2,
+        "by_rule": {
+          "variant-consistency": {
+            "fired": 2,
+            "fixed": 0,
+            "broke": 2
+          }
+        }
+      },
+      "valid_best": {
+        "tau": 0.9878546595573425,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 3387,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "valid_best_gain_macro_f1": 0.0,
+      "valid_best_sign_test_p": 1.0,
+      "test_at_tau_1": {
+        "tau": 1.0,
+        "tokens": 15207,
+        "accuracy": 0.964555796672585,
+        "macro_f1": 0.9399355608045196,
+        "below_tau": 15207,
+        "fired": 10,
+        "fixed": 1,
+        "broke": 9,
+        "by_rule": {
+          "variant-consistency": {
+            "fired": 10,
+            "fixed": 1,
+            "broke": 9
+          }
+        }
+      },
+      "test_at_valid_best": {
+        "tau": 0.9878546595573425,
+        "tokens": 15207,
+        "accuracy": 0.9647530742421253,
+        "macro_f1": 0.9401338547586265,
+        "below_tau": 5977,
+        "fired": 7,
+        "fixed": 1,
+        "broke": 6,
+        "by_rule": {
+          "variant-consistency": {
+            "fired": 7,
+            "fixed": 1,
+            "broke": 6
+          }
+        }
+      },
+      "test_at_valid_best_gain_macro_f1": -0.000334127944713436
+    },
+    {
+      "rule": "english-lexicon-prior",
+      "valid_at_tau_1": {
+        "tau": 1.0,
+        "tokens": 9848,
+        "accuracy": 0.9613119415109667,
+        "macro_f1": 0.940885535359821,
+        "below_tau": 9848,
+        "fired": 50,
+        "fixed": 1,
+        "broke": 49,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 50,
+            "fixed": 1,
+            "broke": 49
+          }
+        }
+      },
+      "valid_best": {
+        "tau": 0.561734676361084,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 76,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "valid_best_gain_macro_f1": 0.0,
+      "valid_best_sign_test_p": 1.0,
+      "test_at_tau_1": {
+        "tau": 1.0,
+        "tokens": 15207,
+        "accuracy": 0.9587689879660682,
+        "macro_f1": 0.9345695037692562,
+        "below_tau": 15207,
+        "fired": 102,
+        "fixed": 3,
+        "broke": 99,
+        "by_rule": {
+          "english-lexicon-prior": {
+            "fired": 102,
+            "fixed": 3,
+            "broke": 99
+          }
+        }
+      },
+      "test_at_valid_best": {
+        "tau": 0.561734676361084,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.94046798270334,
+        "below_tau": 163,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "test_at_valid_best_gain_macro_f1": 0.0
+    },
+    {
+      "rule": "urdu-lexicon-prior",
+      "valid_at_tau_1": {
+        "tau": 1.0,
+        "tokens": 9848,
+        "accuracy": 0.9655767668562144,
+        "macro_f1": 0.9450258135228723,
+        "below_tau": 9848,
+        "fired": 7,
+        "fixed": 0,
+        "broke": 6,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 7,
+            "fixed": 0,
+            "broke": 6
+          }
+        }
+      },
+      "valid_best": {
+        "tau": 0.6670103669166565,
+        "tokens": 9848,
+        "accuracy": 0.9661860276198213,
+        "macro_f1": 0.9456133953989198,
+        "below_tau": 189,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "valid_best_gain_macro_f1": 0.0,
+      "valid_best_sign_test_p": 1.0,
+      "test_at_tau_1": {
+        "tau": 1.0,
+        "tokens": 15207,
+        "accuracy": 0.9649503518116657,
+        "macro_f1": 0.9403242019660819,
+        "below_tau": 15207,
+        "fired": 8,
+        "fixed": 3,
+        "broke": 5,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 8,
+            "fixed": 3,
+            "broke": 5
+          }
+        }
+      },
+      "test_at_valid_best": {
+        "tau": 0.6670103669166565,
+        "tokens": 15207,
+        "accuracy": 0.9650818701913593,
+        "macro_f1": 0.940460205803305,
+        "below_tau": 350,
+        "fired": 4,
+        "fixed": 2,
+        "broke": 2,
+        "by_rule": {
+          "urdu-lexicon-prior": {
+            "fired": 4,
+            "fixed": 2,
+            "broke": 2
+          }
+        }
+      },
+      "test_at_valid_best_gain_macro_f1": -7.776900034950351e-06
+    }
+  ],
+  "reports": {
+    "data/demo/seed_labels.csv": {
+      "tau_0": {
+        "tau": 0.0,
+        "tokens": 51,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "selected": {
+        "tau": 0.561734676361084,
+        "tokens": 51,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "default": {
+        "tau": 0.55,
+        "tokens": 51,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      }
+    },
+    "data/demo/running_examples.csv": {
+      "tau_0": {
+        "tau": 0.0,
+        "tokens": 25,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "selected": {
+        "tau": 0.561734676361084,
+        "tokens": 25,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      },
+      "default": {
+        "tau": 0.55,
+        "tokens": 25,
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "below_tau": 0,
+        "fired": 0,
+        "fixed": 0,
+        "broke": 0,
+        "by_rule": {}
+      }
+    }
+  }
+}
